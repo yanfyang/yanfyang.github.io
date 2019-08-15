@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="规则匹配前向最大匹配前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。比如，我们有一个句子： 小明希望长大以后成为警察。我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}如果滑动窗口为5，那么我们会这样匹配  在第一个滑动窗口中，我们要切分的是  小明希望长   小明希望长  —》 不构成词语 小明希望    --》">
+<meta name="keywords" content="NLP分词">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分词匹配算法">
+<meta property="og:url" content="https://yanfyang.github.io/2019/07/02/segmentation/index.html">
+<meta property="og:site_name" content="Panda Yang&#39;s Blog">
+<meta property="og:description" content="规则匹配前向最大匹配前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。比如，我们有一个句子： 小明希望长大以后成为警察。我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}如果滑动窗口为5，那么我们会这样匹配  在第一个滑动窗口中，我们要切分的是  小明希望长   小明希望长  —》 不构成词语 小明希望    --》">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-19T09:34:25.069Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分词匹配算法">
+<meta name="twitter:description" content="规则匹配前向最大匹配前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。比如，我们有一个句子： 小明希望长大以后成为警察。我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}如果滑动窗口为5，那么我们会这样匹配  在第一个滑动窗口中，我们要切分的是  小明希望长   小明希望长  —》 不构成词语 小明希望    --》">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://yanfyang.github.io/2019/07/02/segmentation/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>分词匹配算法 | Panda Yang's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Panda Yang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">生活杂货铺</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/07/02/segmentation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Panda">
+      <meta itemprop="description" content="保持好奇，探索有趣。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Panda Yang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分词匹配算法
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-02 00:00:00" itemprop="dateCreated datePublished" datetime="2019-07-02T00:00:00+08:00">2019-07-02</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="规则匹配"><a href="#规则匹配" class="headerlink" title="规则匹配"></a>规则匹配</h2><h3 id="前向最大匹配"><a href="#前向最大匹配" class="headerlink" title="前向最大匹配"></a>前向最大匹配</h3><p>前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。<br>比如，我们有一个句子： 小明希望长大以后成为警察。<br>我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}<br>如果滑动窗口为5，那么我们会这样匹配</p>
+<ol>
+<li><p>在第一个滑动窗口中，我们要切分的是  小明希望长 </p>
+<p> 小明希望长  —》 不构成词语</p>
+<pre><code>小明希望    --》 不构成词语
+小明希      --》 不构成词语
+小明        --》 构成词语，从这里切分开
+</code></pre></li>
+<li><p>进入第二个滑动窗口，要切分的是  希望长大以</p>
+<p> 希望长大以  —》 不构成<br> 希望长大    —》 不构成<br> 希望长      —》 不构成<br> 希望        —》 构成， 从这里切分开</p>
+</li>
+<li><p>继续进入第三个滑动窗口，依次类推。</p>
+</li>
+</ol>
+<h3 id="后向最大匹配"><a href="#后向最大匹配" class="headerlink" title="后向最大匹配"></a>后向最大匹配</h3><p>后向最大匹配是说，在滑动窗口区域内，从开头处以次减词，来查看后面的部分是否可以构成词语，如果是，则切分开。<br>同样上面的例子，我们开始是从  后成为警察 来进行第一次匹配</p>
+<ol>
+<li>第一次，我们要匹配切分的是   后成为警察<br> 后成为警察  —》 不构成词语<br> 成为警察    —》 不构成词语<br> 为警察      —》 不构成词语<br> 警察        —》 构成词语，从这里切分开</li>
+<li>第二次，我们要匹配切分的是  大以后成为<br> 大以后成为  —》 不构成词语<br> 以后成为    —》 不构成词语<br> 后成为      —》 不构成词语<br> 成为        —》 构成词语，从这里切分开</li>
+<li>第三次，我们继续匹配剩余的  望长大以后， 以此类推…</li>
+</ol>
+<h2 id="基于统计概率方法"><a href="#基于统计概率方法" class="headerlink" title="基于统计概率方法"></a>基于统计概率方法</h2><p>为什么要提出基于词频的模型呢？ 由上面的模型可以看出，两个模型由于固定的窗口长度和匹配方向的原因，会出现分词的偏差。<br>比如 南京市长江大桥，如果词典里的词有 ‘南京、南京市、市长、长江、大桥’，<br>那么用前向匹配5个固定窗口的来切分，会被切分为 ‘ 南京 | 市长 | 江 | 大桥 ’；同样，用后向匹配5个固定窗口的来切分，则会被切分为 ‘ 南京市 | 长江 | 大桥 ’。 那么如何判定哪种分词方法更好呢？ 这显然是有问题的，于是基于概率统计的方法引入概率模型，模型不仅需要考虑词语本身，还同时考虑词语出现的概率（频次/频率）。</p>
+<h3 id="Unigram-LM-模型"><a href="#Unigram-LM-模型" class="headerlink" title="Unigram LM 模型"></a>Unigram LM 模型</h3><p><em>前提假设：朴素贝叶斯，即所有词语相互独立，联合概率可用各个词语概率乘积进行计算。</em><br>套用贝叶斯公式，将每个分词方案i作为预测的Y，将被分词的句子作为X，则可以表示为：</p>
+<script type="math/tex; mode=display">
+P\left(Y_{i} | X\right) = P\left(X | Y_{i}\right) P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>因为在分词的场景下，我们无论采用哪种分词方法得到的句子X都是相同的，因此可将$P\left(X | Y_{i}\right)$看作1，式子简化为：</p>
+<script type="math/tex; mode=display">
+P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样，我们只需要取最大的$P\left(Y_{i}\right)$来进行分词就可以了，那么这个概率如何计算呢？<br>基于朴素贝叶斯的假设，我们可以认为各个词之间相互独立，$P\left(Y_{i}\right)$方案的概率就可以表示为分词方案中每个分词出现概率的乘积。<br>整个流程如下：</p>
+<blockquote>
+<p>a. 由语料库统计出词语的出现概率，构建词典存储起来；<br>b. 根据词语组合遍历出句子所有可能的分词方案；<br>c. 根据各个词语的频率计算分词方案的联合概率，得出分词方案的可能性；<br>d. 对比选出可能性最大的分词方案作为最后结果。</p>
+<ol>
+<li>计算量的优化：利用图模型，采用维特比算法，思想是每走一步都取最优。</li>
+<li>模型的问题：基于朴素贝叶斯，各个词语相互独立，未考虑到语序信息。</li>
+</ol>
+</blockquote>
+<h3 id="N-gram-模型"><a href="#N-gram-模型" class="headerlink" title="N-gram 模型"></a>N-gram 模型</h3><p>为了解决语序信息缺失的问题，可以用N-gram模型。<br>N-gram是说我们会假设一个词会跟前面的N个词有关，也就是马尔科夫假设。那么$P\left(Y_{i}\right)$的概率计算还需要引入条件概率进行建模。<br>以bi-gram为例，假设每个词语只跟上一个词语有关，方案$P\left(Y_{i}\right)$的概率变为下面的式子，其中xj为一个分词词语。</p>
+<script type="math/tex; mode=display">P(Y_{i}) = P(x_{1}) * P(x_{2}|x_{1}) * P(x_{3}|x_{2}) * P(x_{j-1}|x_{j}) * ... * P(x_{J}|x_{J-1})</script>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/NLP分词/" rel="tag"><i class="fa fa-tag"></i> NLP分词</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/14/Linear Model/" rel="next" title="机器学习之广义线性模型">
+                <i class="fa fa-chevron-left"></i> 机器学习之广义线性模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/03/word2vec/" rel="prev" title="从Word2Vec到Doc2Vec">
+                从Word2Vec到Doc2Vec <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Panda</p>
+              <div class="site-description motion-element" itemprop="description">保持好奇，探索有趣。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:yourname@gmail.com" title="E-Mail &rarr; mailto:yourname@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#规则匹配"><span class="nav-number">1.</span> <span class="nav-text">规则匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前向最大匹配"><span class="nav-number">1.1.</span> <span class="nav-text">前向最大匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后向最大匹配"><span class="nav-number">1.2.</span> <span class="nav-text">后向最大匹配</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于统计概率方法"><span class="nav-number">2.</span> <span class="nav-text">基于统计概率方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Unigram-LM-模型"><span class="nav-number">2.1.</span> <span class="nav-text">Unigram LM 模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#N-gram-模型"><span class="nav-number">2.2.</span> <span class="nav-text">N-gram 模型</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Panda</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,255,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/three/three.min.js"></script>
+
+  
+  <script src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

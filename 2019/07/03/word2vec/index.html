@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Word representationpaper2013年Google的Tomas Mikolov等大神发表的论文，介绍了如何获得词汇的向量表达，提出了CBOW和Skip-Gram两种训练方法。并且有趣的是这些词嵌入向量可以捕捉词汇语法和语义之间的对应关系，可以方便地用加减计算得到相关的对应词。比如，语义方面的，柏林 - 德国 + 法国 = 巴黎；语法方面的，small - smallest +">
+<meta name="keywords" content="词向量,句向量">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从Word2Vec到Doc2Vec">
+<meta property="og:url" content="https://yanfyang.github.io/2019/07/03/word2vec/index.html">
+<meta property="og:site_name" content="Panda Yang&#39;s Blog">
+<meta property="og:description" content="Word representationpaper2013年Google的Tomas Mikolov等大神发表的论文，介绍了如何获得词汇的向量表达，提出了CBOW和Skip-Gram两种训练方法。并且有趣的是这些词嵌入向量可以捕捉词汇语法和语义之间的对应关系，可以方便地用加减计算得到相关的对应词。比如，语义方面的，柏林 - 德国 + 法国 = 巴黎；语法方面的，small - smallest +">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="file:///PICS/word2vec_1.jpg">
+<meta property="og:image" content="file:///PICS/doc2vec_DM.JPG">
+<meta property="og:image" content="file:///PICS/doc2vec_DBOW.JPG.JPG">
+<meta property="og:updated_time" content="2019-08-15T13:12:30.616Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从Word2Vec到Doc2Vec">
+<meta name="twitter:description" content="Word representationpaper2013年Google的Tomas Mikolov等大神发表的论文，介绍了如何获得词汇的向量表达，提出了CBOW和Skip-Gram两种训练方法。并且有趣的是这些词嵌入向量可以捕捉词汇语法和语义之间的对应关系，可以方便地用加减计算得到相关的对应词。比如，语义方面的，柏林 - 德国 + 法国 = 巴黎；语法方面的，small - smallest +">
+<meta name="twitter:image" content="file:///PICS/word2vec_1.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://yanfyang.github.io/2019/07/03/word2vec/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>从Word2Vec到Doc2Vec | Panda Yang's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Panda Yang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">生活杂货铺</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/07/03/word2vec/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Panda">
+      <meta itemprop="description" content="保持好奇，探索有趣。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Panda Yang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">从Word2Vec到Doc2Vec
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-03 20:05:13" itemprop="dateCreated datePublished" datetime="2019-07-03T20:05:13+08:00">2019-07-03</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/读paper/" itemprop="url" rel="index"><span itemprop="name">读paper</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Word-representation"><a href="#Word-representation" class="headerlink" title="Word representation"></a>Word representation</h2><h3 id="paper"><a href="#paper" class="headerlink" title="paper"></a>paper</h3><p>2013年Google的Tomas Mikolov等大神发表的论文，介绍了如何获得词汇的向量表达，提出了CBOW和Skip-Gram两种训练方法。<br>并且有趣的是这些词嵌入向量可以捕捉词汇语法和语义之间的对应关系，可以方便地用加减计算得到相关的对应词。比如，语义方面的，柏林 - 德国 + 法国 = 巴黎；语法方面的，small - smallest + biggest = big。<br>随后基于skip-gram model进行了训练模型的优化，提出了分层softmax（Hierarchical Softmax）、负采样（Negative Sampling）和子采样（Subsampling of Frequent Words）三种加快训练的方法。<br>论文地址：<br><a href="https://arxiv.org/pdf/1301.3781.pdf" target="_blank" rel="noopener">Efficient Estimation of Word Representations in Vector Space</a><br><a href="https://arxiv.org/pdf/1310.4546.pdf" target="_blank" rel="noopener">Distributed Representations of Words and Phrases and their Compositionality</a> </p>
+<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><h4 id="CBOW模型"><a href="#CBOW模型" class="headerlink" title="CBOW模型"></a>CBOW模型</h4><p>CBOW模型全称为Continuous Bag-of-Words Model，同NNLM的模型类似，它也是用周围几个词作为输入，去预测中心词。不同的是，CBOW移去了NNLM中的非线性激活层，并且所有输入的向量是经过加和求平均之后，再全连接到输出，这样相当于使用包含几个词含义的平均向量去预测中心词。<br>也正因为经过了均值的处理，这里的均值向量同词袋模型一样，是丧失了词序信息的，不同的是这里的”词袋”中的词是连续的，因此被命名为连续词袋模型。<br>下图是文章中连续词袋模型和skip-gram的模型对比。<br><img src="file:PICS/word2vec_1.jpg" alt="CBOW skip-gram示意图"></p>
+<h4 id="skip-gram模型"><a href="#skip-gram模型" class="headerlink" title="skip-gram模型"></a>skip-gram模型</h4><p>同CBOW类似，skip-gram也是用词做输入，然后预测句子里的其他词。不同的是，它输入的词为中心词，预测的是中心词前后的C个词，共2C个词。这里的C为超参数，可以调整，C越大，计算复杂度越大，论文用的C为10。<br>我们想象一下，这两种模型的网络，如果最后一层直接使用softmax，那么我们需要输出一堆的概率值，总共有词表大小个，然后取概率最大的1个或者2C个。<br>而一般来说，训练词向量的语料是非常大的，比如论文中用的Google news的语料共有6B个词，即使大神们挑选出了最常用来训练，这些词也有一百万。<br>于是有了下面的优化方法。</p>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><h4 id="分层softmax优化"><a href="#分层softmax优化" class="headerlink" title="分层softmax优化"></a>分层softmax优化</h4><p>在上面的模型中，隐层到softmax的参数太多，无法有效训练。分层softmax使用Huffman编码的二叉树来替代softmax层。</p>
+<h5 id="Huffman树"><a href="#Huffman树" class="headerlink" title="Huffman树"></a>Huffman树</h5><p>Huffman树是最优的二叉树，可以最快地通过最短路径找到某一个叶子结点。在这里叶子结点的个数是字典大小，用词频作为权重，构建了Huffman树，即最常用的词会排在最前面，编码最短；而不常用的词路径才会长。<br>Huffman树的构建也很简单，如果我们规定左子结点总比右子结点的词频小，那么构建方法如下：<br>输入：所有的词以及词频<br>输出：词频编码的Huffman树<br>算法过程：<br>1 将w1,w2,…,wn看成是只有一个结点的树；<br>2 从中挑出最小词频的结点，按左边小，右边大排列，合并成一个新的结点，该结点的词频变为两个词频的加和；<br>3 将旧的两个结点删除，并加入新形成的结点；<br>4 重复第2,3步，直到遍历完1步骤中待选择的单结点树。得到的结果便是Huffman树。</p>
+<h5 id="分层softmax"><a href="#分层softmax" class="headerlink" title="分层softmax"></a>分层softmax</h5><p>有了Huffman树以后，skip-gram中得到的均值向量作为根节点的向量值。对于路径中的每一个结点，我们定义结点的左子结点为正类1，右子结点为负类0，这样每个结点接下来的路径选择都可以看成是一个二分类的问题。<br>而我们分层softmax训练目的是得到一组结点参数θ，可以使最后正确预测的词的概率最大化。<br>根据逻辑回归的公式，可以得到词w的路径上在经过某个结点j做二分类时，概率表达式为：</p>
+<script type="math/tex; mode=display">
+P\left(d_{j}^{w} | x_{w}, \theta_{j-1}^{w}\right)=\left\{\begin{array}{ll}{\sigma\left(x_{w}^{T} \theta_{j-1}^{w}\right)} & {d_{j}^{w}=0} \\ {1-\sigma\left(x_{w}^{T} \theta_{j-1}^{w}\right)} & {d_{j}^{w}=1}\end{array}\right.</script><p>其中，$d_{j}^{w}$表示选择Huffman编码，值为0,1；$\theta_{j}^{w}$为结点上二分类模型的参数；<br>那么，对于一个词从根节点到叶子结点得到这个词的整体概率为每个二分类结点概率的乘积，即</p>
+<script type="math/tex; mode=display">
+\prod_{j=2}^{l_{w}} P\left(d_{j}^{w} | x_{w}, \theta_{j-1}^{w}\right)=\prod_{j=2}^{l_{w}}\left[\sigma\left(x_{w}^{T} \theta_{j-1}^{w}\right)\right]^{1-d_{j}^{w}}\left[1-\sigma\left(x_{w}^{T} \theta_{j-1}^{w}\right)\right]^{d_{j}^{w}}</script><p>将指数变换为对数，求概率的对数最大似然函数：</p>
+<script type="math/tex; mode=display">
+L=\log \prod_{j=2}^{l_{w}} P\left(d_{j}^{w} | x_{w}, \theta_{j-1}^{w}\right)=\sum_{j=2}^{l_{w}}\left(\left(1-d_{j}^{w}\right) \log \left[\sigma\left(x_{w}^{T} \theta_{j-1}^{N}\right)\right]+d_{j}^{w} \log \left[1-\sigma\left(x_{w}^{T} \theta_{j-1}^{w}\right)\right]\right)</script><p>然后得到似然函数对θ和xw的导数，进行梯度上升，更新参数。</p>
+<h4 id="负采样"><a href="#负采样" class="headerlink" title="负采样"></a>负采样</h4><p>在分层softmax中，虽然我们使用Huffman树将参数降低到了log的级别，但是对于低频词来说，路径仍然很长。<br>因此负采样考虑使用采样的方法，在softmax时只取一个正确的中心词和N个错误的中心词，这样词的数量就从几百万降低到了几个，复杂度大大降低。<br>那么如何进行负采样呢？直觉上应该频次出现越高的采样出现概率也高。论文给了一个经验公式计算词的采样概率，取了3/4次幂，其中f函数即词w的出现频次。</p>
+<script type="math/tex; mode=display">
+P\left(w_{i}\right)=\frac{f\left(w_{i}\right)^{3 / 4}}{\sum_{j=0}^{n}\left(f\left(w_{j}\right)^{3 / 4}\right)}</script><p>有了采样概率后，我们可以根据概率来进行负采样了。比如，可以按照概率的大小表示词的长度，将词分布到一条直线上，就得到一条定长的线段。然后我们在这条线段长度范围内随机选取k个数，找到这k个数对应的词，便采样出了k个负样本。</p>
+<h4 id="高频词二次采样"><a href="#高频词二次采样" class="headerlink" title="高频词二次采样"></a>高频词二次采样</h4><p>论文中还考虑到了高频但是没有太多意义词汇的处理，比如 a,the，这些词比一些低频词提供的信息更少。为了调和高低频词的问题，使低频词也可以适当提高采样概率，论文中采用了二次采样的方法，对于每一个词都通过如下启发式的公式给出被丢掉的概率：</p>
+<script type="math/tex; mode=display">
+P\left(w_{i}\right)=1-\sqrt{\frac{t}{f\left(w_{i}\right)}}</script><p>其中，t为一个阈值，文中采用10的-5次幂。</p>
+<h2 id="Sentence-and-Doc-representation"><a href="#Sentence-and-Doc-representation" class="headerlink" title="Sentence and Doc representation"></a>Sentence and Doc representation</h2><h3 id="paper-1"><a href="#paper-1" class="headerlink" title="paper"></a>paper</h3><p>受到Word2Vec的启发，2014年Google的Quoc Le通过引入固定的段落向量，仍然用类似的方法进行训练，得到了doc2vec的模型。doc2vec同样用无监督的方法通过预测文档中的词进行训练，由于模型的docvec是训练得到的，避免了手动进行词向量求和或求均或加权求和带来的人工设计特征的问题。<br>论文地址： <a href="https://cs.stanford.edu/~quocle/paragraph_vector.pdf" target="_blank" rel="noopener">Distributed Representations of Sentences and Documents</a></p>
+<h3 id="模型设计"><a href="#模型设计" class="headerlink" title="模型设计"></a>模型设计</h3><p>同Word2vec的训练模型类似，doc2vec也有对应的两种模型，不同的是在输入端除了有词的输入以外，还加上了段落标记的输入。</p>
+<h4 id="PV-DM模型"><a href="#PV-DM模型" class="headerlink" title="PV-DM模型"></a>PV-DM模型</h4><p>PV-DM，Distributed Memory Model of Paragraph Vectors，是用段落标记和周边词一起去预测中心词，如下图，同Word2vec中的CBOW模型。<br><img src="file:PICS/doc2vec_DM.JPG" alt="PV-DM"><br>在训练的过程中，每段的段落标记共享，即段落向量共享，但不同段落的段落向量并不共享。这样就可以得到不同段落的向量表达，可类比于段落主旨句。<br>因为有了这个段落主旨句，相当于训练时多了一个整体段落的记忆信息，因此称为distributed memory。<br>训练过程由两个步骤：</p>
+<ol>
+<li>先进行模型训练，得到网络的参数，词向量，段落向量；</li>
+<li>如果来了新的句子或者段落，将网络参数和词向量固定，将新的段落加入段落中进行训练，直到收敛。<br>这样就可以得到新的句子的向量表达了。</li>
+</ol>
+<h4 id="PV-DBOW模型"><a href="#PV-DBOW模型" class="headerlink" title="PV-DBOW模型"></a>PV-DBOW模型</h4><p>PV-DBOW，Distributed Bag of Words version of Paragraph Vector，是直接用段落标记去预测段落中随机选取的几个词，如图，类似于Word2vec中的skip-gram模型。<br><img src="file:PICS/doc2vec_DBOW.JPG.JPG" alt="PV-DBOW"></p>
+<p>通常情况下，PV-DM的模型在很多任务上都表现不错，但是如果两者结合效果会更好，作者强烈推荐将两种模型结合起来使用。</p>
+<h2 id="推荐博客"><a href="#推荐博客" class="headerlink" title="推荐博客"></a>推荐博客</h2><p><a href="https://www.cnblogs.com/pinard/p/7243513.html" target="_blank" rel="noopener">刘建平Pnard</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/词向量/" rel="tag"><i class="fa fa-tag"></i> 词向量</a>
+          
+            <a href="/tags/句向量/" rel="tag"><i class="fa fa-tag"></i> 句向量</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/02/segmentation/" rel="next" title="分词匹配算法">
+                <i class="fa fa-chevron-left"></i> 分词匹配算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Panda</p>
+              <div class="site-description motion-element" itemprop="description">保持好奇，探索有趣。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:yourname@gmail.com" title="E-Mail &rarr; mailto:yourname@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Word-representation"><span class="nav-number">1.</span> <span class="nav-text">Word representation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#paper"><span class="nav-number">1.1.</span> <span class="nav-text">paper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型"><span class="nav-number">1.2.</span> <span class="nav-text">模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CBOW模型"><span class="nav-number">1.2.1.</span> <span class="nav-text">CBOW模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#skip-gram模型"><span class="nav-number">1.2.2.</span> <span class="nav-text">skip-gram模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化"><span class="nav-number">1.3.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分层softmax优化"><span class="nav-number">1.3.1.</span> <span class="nav-text">分层softmax优化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Huffman树"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">Huffman树</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#分层softmax"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">分层softmax</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#负采样"><span class="nav-number">1.3.2.</span> <span class="nav-text">负采样</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高频词二次采样"><span class="nav-number">1.3.3.</span> <span class="nav-text">高频词二次采样</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sentence-and-Doc-representation"><span class="nav-number">2.</span> <span class="nav-text">Sentence and Doc representation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#paper-1"><span class="nav-number">2.1.</span> <span class="nav-text">paper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型设计"><span class="nav-number">2.2.</span> <span class="nav-text">模型设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PV-DM模型"><span class="nav-number">2.2.1.</span> <span class="nav-text">PV-DM模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PV-DBOW模型"><span class="nav-number">2.2.2.</span> <span class="nav-text">PV-DBOW模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推荐博客"><span class="nav-number">3.</span> <span class="nav-text">推荐博客</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Panda</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,255,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/three/three.min.js"></script>
+
+  
+  <script src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
