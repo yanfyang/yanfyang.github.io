@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="概率图模型先放一张概率图模型的大框架图，顺一顺思路。按照大的框架，两者都属于概率图模型。概率图模型是一类用图来表示变量之间相关关系的概率模型。而图由结点和边构成，也就是数学定义上的图G由结点V和边E共同组合而成。根据边的性质，有向无向，概率图模型大致可分为两类，有向无环图成为有向图模型或贝叶斯网；无向图表示的称为无向图模型或马尔可夫网。脉络框架表示如下图：有向图的联合概率计算可用一堆条件概率相乘得">
+<meta name="keywords" content="HMM,CRF,序列模型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解HMM、CRF序列模型">
+<meta property="og:url" content="https://yanfyang.github.io/2019/07/04/HMM CRF/index.html">
+<meta property="og:site_name" content="Panda Yang&#39;s Blog">
+<meta property="og:description" content="概率图模型先放一张概率图模型的大框架图，顺一顺思路。按照大的框架，两者都属于概率图模型。概率图模型是一类用图来表示变量之间相关关系的概率模型。而图由结点和边构成，也就是数学定义上的图G由结点V和边E共同组合而成。根据边的性质，有向无向，概率图模型大致可分为两类，有向无环图成为有向图模型或贝叶斯网；无向图表示的称为无向图模型或马尔可夫网。脉络框架表示如下图：有向图的联合概率计算可用一堆条件概率相乘得">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/graphmodel.jpg">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/HMM.JPG">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/CRF.JPG">
+<meta property="og:updated_time" content="2019-08-26T14:34:37.988Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解HMM、CRF序列模型">
+<meta name="twitter:description" content="概率图模型先放一张概率图模型的大框架图，顺一顺思路。按照大的框架，两者都属于概率图模型。概率图模型是一类用图来表示变量之间相关关系的概率模型。而图由结点和边构成，也就是数学定义上的图G由结点V和边E共同组合而成。根据边的性质，有向无向，概率图模型大致可分为两类，有向无环图成为有向图模型或贝叶斯网；无向图表示的称为无向图模型或马尔可夫网。脉络框架表示如下图：有向图的联合概率计算可用一堆条件概率相乘得">
+<meta name="twitter:image" content="https://yanfyang.github.io/images/201907/graphmodel.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://yanfyang.github.io/2019/07/04/HMM CRF/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>理解HMM、CRF序列模型 | Panda Yang's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Panda Yang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">生活杂货铺</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/07/04/HMM CRF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Panda">
+      <meta itemprop="description" content="保持好奇，探索有趣。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Panda Yang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">理解HMM、CRF序列模型
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-04 21:48:13" itemprop="dateCreated datePublished" datetime="2019-07-04T21:48:13+08:00">2019-07-04</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="概率图模型"><a href="#概率图模型" class="headerlink" title="概率图模型"></a>概率图模型</h2><p>先放一张概率图模型的大框架图，顺一顺思路。<br>按照大的框架，两者都属于概率图模型。概率图模型是一类用图来表示变量之间相关关系的概率模型。而图由结点和边构成，也就是数学定义上的图G由结点V和边E共同组合而成。<br>根据边的性质，有向无向，概率图模型大致可分为两类，有向无环图成为有向图模型或贝叶斯网；无向图表示的称为无向图模型或马尔可夫网。脉络框架表示如下图：<br><img src="/images/201907/graphmodel.jpg" alt="graph model"><br>有向图的联合概率计算可用一堆条件概率相乘得到，而无向图的联合概率计算则是引入了新的表达方式 - 团的势函数，将一堆最大团的势函数相乘再归一化得到概率值。<br>个人理解，这些概率计算的不同也为无向图的强大奠定了基础，因为在CRF最主要的特点之一就是可以自定义特征函数，而这个特征函数其实就是从势函数的定义来的。<br>了解了大概框架之后，下面进入正题。</p>
+<hr>
+<h2 id="隐马尔可夫模型HMM"><a href="#隐马尔可夫模型HMM" class="headerlink" title="隐马尔可夫模型HMM"></a>隐马尔可夫模型HMM</h2><h3 id="HMM结构及由来"><a href="#HMM结构及由来" class="headerlink" title="HMM结构及由来"></a>HMM结构及由来</h3><p>根据上面的分类，HMM属于有向图模型，作为序列模型，可用于语音识别，实体命名识别等领域。<br>下图是它的表示，最下面的序列表示观测序列，比如在NER任务中，我们可以看到每个句子中的每个字；上面的序列表示隐状态序列，比如每个字的label，而这个label也可以灵活改变，如果label设为B,I,E,S，可以作为分词任务，如果label表示为LOC，PERSON等又可以转换为实体命名识别等等。<br><img src="/images/201907/HMM.JPG" alt="HMM structure"><br>其中，我们假设观测序列的每个x仅由隐状态决定，而隐状态y的转换由一个转换概率决定。也就是说，如果要确定一个隐马尔可夫模型，就需要知道三个参数，根据隐状态输出观测值的概率矩阵B，根据前一个隐状态得到此时刻隐状态的状态转移矩阵A，还有一个初始时刻决定隐状态的初始状态概率π。<br>为什么叫它隐马尔可夫呢？我们知道马尔可夫链，它表示了一条有方向的链条，是最简单的有向图。其中，链上的每个结点状态仅由它的前一个结点决定，而跟其他以前的状态无关。联合概率分布可表示为：</p>
+<script type="math/tex; mode=display">
+P\left(x_{1}, y_{1}, \ldots, x_{n}, y_{n}\right)=P\left(y_{1}\right) P\left(x_{1} | y_{1}\right) \prod_{i=2}^{n} P\left(y_{i} | y_{i-1}\right) P\left(x_{i} | y_{i}\right)</script><p>仔细查看一下HMM的模型结构，可以看到HMM也有一条马尔可夫链，但是它的这条链位于隐状态序列上，因此称为隐马尔可夫。</p>
+<h3 id="HMM的三个基本问题"><a href="#HMM的三个基本问题" class="headerlink" title="HMM的三个基本问题"></a>HMM的三个基本问题</h3><h4 id="概率计算问题"><a href="#概率计算问题" class="headerlink" title="概率计算问题"></a>概率计算问题</h4><p>概率计算问题是说已知模型，给定一个观测序列，来计算一下观测序列出现的概率。用来评估模型与观测序列的匹配程度。<br>概率计算算法最直接的暴力遍历，复杂度为隐状态数的N次方，指数级别复杂度，一般认为无法操作。<br>除此之外，根据策略不同分为两种，前向算法和后向算法。</p>
+<blockquote>
+<p>前向算法</p>
+</blockquote>
+<p>前向算法定义一个前向概率，表示在t时刻隐状态为i的情况下，观测序列为O1,O2,…,OT的概率，假设该前向概率记为$\alpha_{t}(i)$，则下一时刻的前向概率递推关系可表示为</p>
+<script type="math/tex; mode=display">
+\alpha_{t+1}(i)=\left[\sum_{j=1}^{N} \alpha_{t}(j) a_{j t}\right] b_{i}\left(o_{t+1}\right), \quad i=1,2, \cdots, N</script><p>总结一下前向算法：<br>输入HMM模型参数，A,B,π和观测序列<br>输出观测序列概率<br>过程：<br>1 根据初始时刻状态概率π计算时刻1各个隐状态的前向概率</p>
+<script type="math/tex; mode=display">
+\alpha_{1}(i)=\pi_{i} b_{i}\left(o_{1}\right), \quad i=1,2, \cdots, N</script><p>2 递推时刻2,3，…T时刻的前向概率</p>
+<script type="math/tex; mode=display">
+\alpha_{t+1}(i)=\left[\sum_{j=1}^{N} \alpha_{t}(j) a_{j t}\right] b_{i}\left(o_{t+1}\right), \quad i=1,2, \cdots, N</script><p>3 计算最终结果</p>
+<script type="math/tex; mode=display">
+P(O | \lambda)=\sum_{i=1}^{N} \alpha_{T}(i)</script><p>时间复杂度 $O\left(N^{2} T\right)$</p>
+<blockquote>
+<p>后向算法</p>
+</blockquote>
+<p>后向算法定义了一个后向概率，代表t时刻时隐状态为i，同时之后时刻的观测序列为Ot+1,…,OT的概率，假设该后向概率即为$\beta_{t}(i)$，则向前推，前一个时刻的后向概率递推关系可表示为：</p>
+<script type="math/tex; mode=display">\beta_{t}(i)=\sum_{j=1}^{N} a_{i j} b_{j}\left(o_{i+1}\right) \beta_{t+1}(j)</script><p>总结一下后向算法：<br>输入输出同上<br>过程：<br>1 初始化时刻T各个隐状态的后向概率，$\beta_{T}(i)=1, \quad i=1,2, \cdots, N$<br>2 对前面的T-1,T-2,…,1时刻的后向概率：</p>
+<script type="math/tex; mode=display">
+\beta_{t}(i)=\sum_{j=1}^{N} a_{i j} b_{j}\left(o_{t+1}\right) \beta_{t+1}(j)</script><p>3 计算最终结果</p>
+<script type="math/tex; mode=display">
+P(O | \lambda)=\sum_{i=1}^{N} \pi_{i} b_{i}\left(o_{1}\right) \beta_{1}(i)</script><p>同理，时间复杂度也为$O\left(N^{2} T\right)$</p>
+<h4 id="预测问题"><a href="#预测问题" class="headerlink" title="预测问题"></a>预测问题</h4><p>预测问题是已知HMM模型参数的情况下，由观测序列去预测隐状态序列是什么。这个问题在实际场景中非常有用，因为大多数情况下，我们都只是可以观测到现象本身，但对现象背后的隐藏信息无法直接观测，只能推测得到。HMM的预测算法为这一场景提供了解决思路。<br>对于预测问题，如果我们可以罗列出所有的隐状态序列可能，然后计算他们的概率，选取概率最大的作为最后的结果。但是，同样面临着指数级的难度。<br>通常，会用维特比算法来优化，分为两步，第一步找出每一时刻t在各个隐状态下观测到该时刻观测值的概率最大值，确定该时刻的最优路径，然后依次类推，到最后的时刻，就得到了整体的最优路径的概率。第二步，回溯得到最优概率的路径，就得到该最大概率对应的隐状态序列。<br>这里跟概率计算的前向算法有些类似，因为本质上都用到了动态规划的思想。<br>但是，在前向算法的计算中，每到达一个时刻的隐状态，它计算的是所有前一个时刻到达该时刻隐状态概率的总和，因为要计算的是观测路径的概率，所以不论从哪个隐状态发射出来的观测值，都要 <strong>加和</strong> 起来。<br>而在这里，我们是要求隐状态的最优序列，所以在递推计算过程中，我们仅仅需要在所有前一个隐状态转换到该时刻隐状态过程中的一个 <strong>最大值</strong> ，即最优序列对应的概率。</p>
+<h4 id="学习问题"><a href="#学习问题" class="headerlink" title="学习问题"></a>学习问题</h4><p>学习问题研究的是如何让模型自己学习出模型的参数A,B,π。</p>
+<blockquote>
+<p>监督学习</p>
+</blockquote>
+<p>最简单的方法可以采用监督学习，比如给定足够多的训练数据，包括观测序列和状态序列。如果数据足够大，可以认为能够反映模型的参数分布规律，那么用统计中极大似然估计就可以得到参数。<br>比如计算某一隐状态下的发射概率，我们统计一下在这一隐状态出现的情况下，对应的观测值都是什么，概率是什么，就得到了发射概率。</p>
+<blockquote>
+<p>非监督学习</p>
+</blockquote>
+<p>非监督学习中，数据只给出了一些观测序列，而没有标注的隐状态序列，同样要求学习模型参数。<br>这样，可以看成是含有隐变量的概率模型，可采用EM算法来求解。</p>
+<h2 id="条件随机场CRF"><a href="#条件随机场CRF" class="headerlink" title="条件随机场CRF"></a>条件随机场CRF</h2><h3 id="CRF模型结构"><a href="#CRF模型结构" class="headerlink" title="CRF模型结构"></a>CRF模型结构</h3><p>条件随机场是马尔可夫随机场的特殊形式，由第一部分知道马尔可夫随机场的联合概率可表示为最大团势函数的乘积再加上归一化处理成概率形式。<br>条件随机场也是一样，只不过比马尔可夫随机场多了一个条件序列，也就是观测序列X。它是给定随机变量X的<strong>条件</strong>下，<strong>随机</strong>变量Y的概率分布，同时随机变量Y构成无向图表示的马尔可夫随机场。之前觉得条件随机场非常拗口，在不了解含义的情况下，每次猛地提起，就一脸懵，觉得这个名词相当熟悉又陌生，这样联系起来之后，突然感觉命名是非常贴切啊~<br>条件随机场其实是一个大的概念，只要Y符合马尔可夫随机场的性质就能构成。对于标注任务来说，研究的都是线性链条件随机场，即随机变量Y的无向图是一条链，这样任意两个相邻的y结点就构成了最大团。<br>CRF的结构可表示如下：<img src="/images/201907/CRF.JPG" alt="CRF structure"><br>CRF是判别式模型，对条件概率建模时也按照无向图的概率计算引入了势函数，这里叫做特征函数。特征函数可以自定义，由两部分构成：</p>
+<ol>
+<li><em>转移特征</em> 定义结点与结点的相互关系，依赖于前一个时刻和当前时刻；</li>
+<li><em>状态特征</em> 定义结点上的特征，与位置有关；</li>
+</ol>
+<p>显然特征函数刻画结点与边之间的关系，为非负值，选用指数势函数。那么，给定观测序列x，随机变量序列y对应的条件概率可表示为：</p>
+<script type="math/tex; mode=display">
+P(\mathbf{y} | \mathbf{x})=\frac{1}{Z} \exp \left(\sum_{j} \sum_{i=1}^{n-1} \lambda_{j} t_{j}\left(y_{i+1}, y_{i}, \mathbf{x}, i\right)+\sum_{k} \sum_{i=1}^{n} \mu_{k} s_{k}\left(y_{i}, \mathbf{x}, i\right)\right)</script><p>其中，t对应两个结点之间的转移特征函数，s对应状态特征函数，共有j个t函数，k个s函数。<br>CRF的特征函数可以在局部路径上计算局部特征值，也可以将y序列的特征加和起来，计算整个序列的全局特征函数值。这样，CRF就可以从全局出发，得到整体最优解。</p>
+<h3 id="HMM与CRF对比"><a href="#HMM与CRF对比" class="headerlink" title="HMM与CRF对比"></a>HMM与CRF对比</h3><p>总结一下，对比HMM，可以发现，</p>
+<ol>
+<li>HMM预测的概率计算是在每一步上得到最优概率，然后迭代到最后得到最优路径；而CRF的概率计算一开始计算的就是整个序列的概率，得到的概率值就是该序列的概率，这样得到的最优解就会是所谓的全局最优。</li>
+<li>HMM从假设开始，就约束了隐状态只跟前一个时刻有关，无法获取更远的信息；而CRF由于引入了特征函数，虽然结点与结点之间的关系也是定义在相邻结点上，但是计算全局序列的时候会把各个时刻的特征相加和，从某种程度上讲是可以融合序列中各个时刻的状态信息的，因此获取的信息更全面。</li>
+<li>本质上，HMM是生成式有向图模型，CRF是判别式无向图模型。</li>
+</ol>
+<h2 id="好的相关资源"><a href="#好的相关资源" class="headerlink" title="好的相关资源"></a>好的相关资源</h2><ol>
+<li><a href="https://www.zhihu.com/question/35866596/answer/236886066" target="_blank" rel="noopener">知乎:如何用简单易懂的例子解释条件随机场（CRF）模型？它和HMM有什么区别？</a></li>
+<li><a href="https://www.cnblogs.com/pinard/p/6945257.html" target="_blank" rel="noopener">刘建平博客园 HMM系列</a></li>
+<li>机器学习西瓜书</li>
+<li>统计学习方法</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/HMM/" rel="tag"><i class="fa fa-tag"></i> HMM</a>
+          
+            <a href="/tags/CRF/" rel="tag"><i class="fa fa-tag"></i> CRF</a>
+          
+            <a href="/tags/序列模型/" rel="tag"><i class="fa fa-tag"></i> 序列模型</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/03/word2vec/" rel="next" title="从Word2Vec到Doc2Vec">
+                <i class="fa fa-chevron-left"></i> 从Word2Vec到Doc2Vec
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Panda</p>
+              <div class="site-description motion-element" itemprop="description">保持好奇，探索有趣。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:yourname@gmail.com" title="E-Mail &rarr; mailto:yourname@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概率图模型"><span class="nav-number">1.</span> <span class="nav-text">概率图模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#隐马尔可夫模型HMM"><span class="nav-number">2.</span> <span class="nav-text">隐马尔可夫模型HMM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HMM结构及由来"><span class="nav-number">2.1.</span> <span class="nav-text">HMM结构及由来</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HMM的三个基本问题"><span class="nav-number">2.2.</span> <span class="nav-text">HMM的三个基本问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#概率计算问题"><span class="nav-number">2.2.1.</span> <span class="nav-text">概率计算问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#预测问题"><span class="nav-number">2.2.2.</span> <span class="nav-text">预测问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#学习问题"><span class="nav-number">2.2.3.</span> <span class="nav-text">学习问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件随机场CRF"><span class="nav-number">3.</span> <span class="nav-text">条件随机场CRF</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CRF模型结构"><span class="nav-number">3.1.</span> <span class="nav-text">CRF模型结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HMM与CRF对比"><span class="nav-number">3.2.</span> <span class="nav-text">HMM与CRF对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#好的相关资源"><span class="nav-number">4.</span> <span class="nav-text">好的相关资源</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Panda</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,255,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/three/three.min.js"></script>
+
+  
+  <script src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -108,14 +108,14 @@
 <meta property="og:site_name" content="Panda Yang&#39;s Blog">
 <meta property="og:description" content="Word representationpaper2013年Google的Tomas Mikolov等大神发表的论文，介绍了如何获得词汇的向量表达，提出了CBOW和Skip-Gram两种训练方法。并且有趣的是这些词嵌入向量可以捕捉词汇语法和语义之间的对应关系，可以方便地用加减计算得到相关的对应词。比如，语义方面的，柏林 - 德国 + 法国 = 巴黎；语法方面的，small - smallest +">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="file:///PICS/word2vec_1.jpg">
-<meta property="og:image" content="file:///PICS/doc2vec_DM.JPG">
-<meta property="og:image" content="file:///PICS/doc2vec_DBOW.JPG.JPG">
-<meta property="og:updated_time" content="2019-08-15T13:12:30.616Z">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/word2vec_1.jpg">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/doc2vec_DM.JPG">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/doc2vec_DBOW.jpg">
+<meta property="og:updated_time" content="2019-08-26T12:11:51.673Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从Word2Vec到Doc2Vec">
 <meta name="twitter:description" content="Word representationpaper2013年Google的Tomas Mikolov等大神发表的论文，介绍了如何获得词汇的向量表达，提出了CBOW和Skip-Gram两种训练方法。并且有趣的是这些词嵌入向量可以捕捉词汇语法和语义之间的对应关系，可以方便地用加减计算得到相关的对应词。比如，语义方面的，柏林 - 德国 + 法国 = 巴黎；语法方面的，small - smallest +">
-<meta name="twitter:image" content="file:///PICS/word2vec_1.jpg">
+<meta name="twitter:image" content="https://yanfyang.github.io/images/201907/word2vec_1.jpg">
 
 
 
@@ -433,7 +433,7 @@
 
       
         <h2 id="Word-representation"><a href="#Word-representation" class="headerlink" title="Word representation"></a>Word representation</h2><h3 id="paper"><a href="#paper" class="headerlink" title="paper"></a>paper</h3><p>2013年Google的Tomas Mikolov等大神发表的论文，介绍了如何获得词汇的向量表达，提出了CBOW和Skip-Gram两种训练方法。<br>并且有趣的是这些词嵌入向量可以捕捉词汇语法和语义之间的对应关系，可以方便地用加减计算得到相关的对应词。比如，语义方面的，柏林 - 德国 + 法国 = 巴黎；语法方面的，small - smallest + biggest = big。<br>随后基于skip-gram model进行了训练模型的优化，提出了分层softmax（Hierarchical Softmax）、负采样（Negative Sampling）和子采样（Subsampling of Frequent Words）三种加快训练的方法。<br>论文地址：<br><a href="https://arxiv.org/pdf/1301.3781.pdf" target="_blank" rel="noopener">Efficient Estimation of Word Representations in Vector Space</a><br><a href="https://arxiv.org/pdf/1310.4546.pdf" target="_blank" rel="noopener">Distributed Representations of Words and Phrases and their Compositionality</a> </p>
-<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><h4 id="CBOW模型"><a href="#CBOW模型" class="headerlink" title="CBOW模型"></a>CBOW模型</h4><p>CBOW模型全称为Continuous Bag-of-Words Model，同NNLM的模型类似，它也是用周围几个词作为输入，去预测中心词。不同的是，CBOW移去了NNLM中的非线性激活层，并且所有输入的向量是经过加和求平均之后，再全连接到输出，这样相当于使用包含几个词含义的平均向量去预测中心词。<br>也正因为经过了均值的处理，这里的均值向量同词袋模型一样，是丧失了词序信息的，不同的是这里的”词袋”中的词是连续的，因此被命名为连续词袋模型。<br>下图是文章中连续词袋模型和skip-gram的模型对比。<br><img src="file:PICS/word2vec_1.jpg" alt="CBOW skip-gram示意图"></p>
+<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><h4 id="CBOW模型"><a href="#CBOW模型" class="headerlink" title="CBOW模型"></a>CBOW模型</h4><p>CBOW模型全称为Continuous Bag-of-Words Model，同NNLM的模型类似，它也是用周围几个词作为输入，去预测中心词。不同的是，CBOW移去了NNLM中的非线性激活层，并且所有输入的向量是经过加和求平均之后，再全连接到输出，这样相当于使用包含几个词含义的平均向量去预测中心词。<br>也正因为经过了均值的处理，这里的均值向量同词袋模型一样，是丧失了词序信息的，不同的是这里的”词袋”中的词是连续的，因此被命名为连续词袋模型。<br>下图是文章中连续词袋模型和skip-gram的模型对比。<br><img src="/images/201907/word2vec_1.jpg" alt="CBOW skip-gram示意图"></p>
 <h4 id="skip-gram模型"><a href="#skip-gram模型" class="headerlink" title="skip-gram模型"></a>skip-gram模型</h4><p>同CBOW类似，skip-gram也是用词做输入，然后预测句子里的其他词。不同的是，它输入的词为中心词，预测的是中心词前后的C个词，共2C个词。这里的C为超参数，可以调整，C越大，计算复杂度越大，论文用的C为10。<br>我们想象一下，这两种模型的网络，如果最后一层直接使用softmax，那么我们需要输出一堆的概率值，总共有词表大小个，然后取概率最大的1个或者2C个。<br>而一般来说，训练词向量的语料是非常大的，比如论文中用的Google news的语料共有6B个词，即使大神们挑选出了最常用来训练，这些词也有一百万。<br>于是有了下面的优化方法。</p>
 <h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><h4 id="分层softmax优化"><a href="#分层softmax优化" class="headerlink" title="分层softmax优化"></a>分层softmax优化</h4><p>在上面的模型中，隐层到softmax的参数太多，无法有效训练。分层softmax使用Huffman编码的二叉树来替代softmax层。</p>
 <h5 id="Huffman树"><a href="#Huffman树" class="headerlink" title="Huffman树"></a>Huffman树</h5><p>Huffman树是最优的二叉树，可以最快地通过最短路径找到某一个叶子结点。在这里叶子结点的个数是字典大小，用词频作为权重，构建了Huffman树，即最常用的词会排在最前面，编码最短；而不常用的词路径才会长。<br>Huffman树的构建也很简单，如果我们规定左子结点总比右子结点的词频小，那么构建方法如下：<br>输入：所有的词以及词频<br>输出：词频编码的Huffman树<br>算法过程：<br>1 将w1,w2,…,wn看成是只有一个结点的树；<br>2 从中挑出最小词频的结点，按左边小，右边大排列，合并成一个新的结点，该结点的词频变为两个词频的加和；<br>3 将旧的两个结点删除，并加入新形成的结点；<br>4 重复第2,3步，直到遍历完1步骤中待选择的单结点树。得到的结果便是Huffman树。</p>
@@ -452,12 +452,12 @@ P\left(w_{i}\right)=\frac{f\left(w_{i}\right)^{3 / 4}}{\sum_{j=0}^{n}\left(f\lef
 P\left(w_{i}\right)=1-\sqrt{\frac{t}{f\left(w_{i}\right)}}</script><p>其中，t为一个阈值，文中采用10的-5次幂。</p>
 <h2 id="Sentence-and-Doc-representation"><a href="#Sentence-and-Doc-representation" class="headerlink" title="Sentence and Doc representation"></a>Sentence and Doc representation</h2><h3 id="paper-1"><a href="#paper-1" class="headerlink" title="paper"></a>paper</h3><p>受到Word2Vec的启发，2014年Google的Quoc Le通过引入固定的段落向量，仍然用类似的方法进行训练，得到了doc2vec的模型。doc2vec同样用无监督的方法通过预测文档中的词进行训练，由于模型的docvec是训练得到的，避免了手动进行词向量求和或求均或加权求和带来的人工设计特征的问题。<br>论文地址： <a href="https://cs.stanford.edu/~quocle/paragraph_vector.pdf" target="_blank" rel="noopener">Distributed Representations of Sentences and Documents</a></p>
 <h3 id="模型设计"><a href="#模型设计" class="headerlink" title="模型设计"></a>模型设计</h3><p>同Word2vec的训练模型类似，doc2vec也有对应的两种模型，不同的是在输入端除了有词的输入以外，还加上了段落标记的输入。</p>
-<h4 id="PV-DM模型"><a href="#PV-DM模型" class="headerlink" title="PV-DM模型"></a>PV-DM模型</h4><p>PV-DM，Distributed Memory Model of Paragraph Vectors，是用段落标记和周边词一起去预测中心词，如下图，同Word2vec中的CBOW模型。<br><img src="file:PICS/doc2vec_DM.JPG" alt="PV-DM"><br>在训练的过程中，每段的段落标记共享，即段落向量共享，但不同段落的段落向量并不共享。这样就可以得到不同段落的向量表达，可类比于段落主旨句。<br>因为有了这个段落主旨句，相当于训练时多了一个整体段落的记忆信息，因此称为distributed memory。<br>训练过程由两个步骤：</p>
+<h4 id="PV-DM模型"><a href="#PV-DM模型" class="headerlink" title="PV-DM模型"></a>PV-DM模型</h4><p>PV-DM，Distributed Memory Model of Paragraph Vectors，是用段落标记和周边词一起去预测中心词，如下图，同Word2vec中的CBOW模型。<br><img src="/images/201907/doc2vec_DM.JPG" alt="PV-DM"><br>在训练的过程中，每段的段落标记共享，即段落向量共享，但不同段落的段落向量并不共享。这样就可以得到不同段落的向量表达，可类比于段落主旨句。<br>因为有了这个段落主旨句，相当于训练时多了一个整体段落的记忆信息，因此称为distributed memory。<br>训练过程由两个步骤：</p>
 <ol>
 <li>先进行模型训练，得到网络的参数，词向量，段落向量；</li>
 <li>如果来了新的句子或者段落，将网络参数和词向量固定，将新的段落加入段落中进行训练，直到收敛。<br>这样就可以得到新的句子的向量表达了。</li>
 </ol>
-<h4 id="PV-DBOW模型"><a href="#PV-DBOW模型" class="headerlink" title="PV-DBOW模型"></a>PV-DBOW模型</h4><p>PV-DBOW，Distributed Bag of Words version of Paragraph Vector，是直接用段落标记去预测段落中随机选取的几个词，如图，类似于Word2vec中的skip-gram模型。<br><img src="file:PICS/doc2vec_DBOW.JPG.JPG" alt="PV-DBOW"></p>
+<h4 id="PV-DBOW模型"><a href="#PV-DBOW模型" class="headerlink" title="PV-DBOW模型"></a>PV-DBOW模型</h4><p>PV-DBOW，Distributed Bag of Words version of Paragraph Vector，是直接用段落标记去预测段落中随机选取的几个词，如图，类似于Word2vec中的skip-gram模型。<br><img src="/images/201907/doc2vec_DBOW.jpg" alt="PV-DBOW"></p>
 <p>通常情况下，PV-DM的模型在很多任务上都表现不错，但是如果两者结合效果会更好，作者强烈推荐将两种模型结合起来使用。</p>
 <h2 id="推荐博客"><a href="#推荐博客" class="headerlink" title="推荐博客"></a>推荐博客</h2><p><a href="https://www.cnblogs.com/pinard/p/7243513.html" target="_blank" rel="noopener">刘建平Pnard</a></p>
 
@@ -510,6 +510,10 @@ P\left(w_{i}\right)=1-\sqrt{\frac{t}{f\left(w_{i}\right)}}</script><p>其中，t
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/04/HMM CRF/" rel="prev" title="理解HMM、CRF序列模型">
+                理解HMM、CRF序列模型 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -578,7 +582,7 @@ P\left(w_{i}\right)=1-\sqrt{\frac{t}{f\left(w_{i}\right)}}</script><p>其中，t
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -642,7 +646,13 @@ P\left(w_{i}\right)=1-\sqrt{\frac{t}{f\left(w_{i}\right)}}</script><p>其中，t
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

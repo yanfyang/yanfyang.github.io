@@ -331,6 +331,173 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/07/04/HMM CRF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Panda">
+      <meta itemprop="description" content="保持好奇，探索有趣。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Panda Yang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/04/HMM CRF/" class="post-title-link" itemprop="url">理解HMM、CRF序列模型</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-04 21:48:13" itemprop="dateCreated datePublished" datetime="2019-07-04T21:48:13+08:00">2019-07-04</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>
+              概率图模型先放一张概率图模型的大框架图，顺一顺思路。按照大的框架，两者都属于概率图模型。概率图模型是一类用图来表示变量之间相关关系的概率模型。而图由结点和边构成，也就是数学定义上的图G由结点V和边E共同组合而成。根据边的性质，有向无向，概率图模型大致可分为两类，有向无环图成为有向图模型或贝叶斯网；无向图表示的称为无向图模型或马尔可夫网。脉络框架表示如下图：有向图的联合概率计算可用一堆条件概率相乘得到，而无向图的联合概率计算则是引入了新的表达方式 - 团的势函数，将一堆最大团的势函数相乘再归一化得
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/07/04/HMM CRF/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/07/03/word2vec/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1036,7 +1203,7 @@ f(x_{i})= w \cdot x_{i} + b损失函数损失函数采用均方误差，学习�
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1100,7 +1267,13 @@ f(x_{i})= w \cdot x_{i} + b损失函数损失函数采用均方误差，学习�
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1314,6 +1487,8 @@ f(x_{i})= w \cdot x_{i} + b损失函数损失函数采用均方误差，学习�
 
   
   
+    
+      
     
       
     
