@@ -100,18 +100,21 @@
 
 
 
-  <meta name="description" content="无监督学习聚类模型距离度量优化随机初始化最大距离初始化K-means++">
+  <meta name="description" content="非监督学习通常情况下，可以把机器学习分为监督学习、非监督学习和强化学习。监督学习，比如分类任务，回归任务，训练数据是带有目标标签值的，目的是找到数据点与标签之间的映射关系。对于非监督学习，它的数据是没有标记的，算法正是要通过对训练数据的学习自动探索数据的内在联系规律。其中，研究最多的就是聚类。 聚类模型聚类模型试图经过数据集的学习，将数据划分为若干不相交的子集，这些子集称之为“簇”。最终形成的簇结">
 <meta name="keywords" content="无监督学习,聚类">
 <meta property="og:type" content="article">
-<meta property="og:title" content="K-means聚类">
+<meta property="og:title" content="k-means聚类">
 <meta property="og:url" content="https://yanfyang.github.io/2019/06/22/clustering/index.html">
 <meta property="og:site_name" content="Panda Yang&#39;s Blog">
-<meta property="og:description" content="无监督学习聚类模型距离度量优化随机初始化最大距离初始化K-means++">
+<meta property="og:description" content="非监督学习通常情况下，可以把机器学习分为监督学习、非监督学习和强化学习。监督学习，比如分类任务，回归任务，训练数据是带有目标标签值的，目的是找到数据点与标签之间的映射关系。对于非监督学习，它的数据是没有标记的，算法正是要通过对训练数据的学习自动探索数据的内在联系规律。其中，研究最多的就是聚类。 聚类模型聚类模型试图经过数据集的学习，将数据划分为若干不相交的子集，这些子集称之为“簇”。最终形成的簇结">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-31T01:14:40.232Z">
+<meta property="og:image" content="https://yanfyang.github.io/images/201906/kmeansbadcase1.png">
+<meta property="og:image" content="https://yanfyang.github.io/images/201906/elbow.png">
+<meta property="og:updated_time" content="2019-08-31T12:08:44.806Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="K-means聚类">
-<meta name="twitter:description" content="无监督学习聚类模型距离度量优化随机初始化最大距离初始化K-means++">
+<meta name="twitter:title" content="k-means聚类">
+<meta name="twitter:description" content="非监督学习通常情况下，可以把机器学习分为监督学习、非监督学习和强化学习。监督学习，比如分类任务，回归任务，训练数据是带有目标标签值的，目的是找到数据点与标签之间的映射关系。对于非监督学习，它的数据是没有标记的，算法正是要通过对训练数据的学习自动探索数据的内在联系规律。其中，研究最多的就是聚类。 聚类模型聚类模型试图经过数据集的学习，将数据划分为若干不相交的子集，这些子集称之为“簇”。最终形成的簇结">
+<meta name="twitter:image" content="https://yanfyang.github.io/images/201906/kmeansbadcase1.png">
 
 
 
@@ -129,7 +132,7 @@
   };
 </script>
 
-  <title>K-means聚类 | Panda Yang's Blog</title>
+  <title>k-means聚类 | Panda Yang's Blog</title>
   
 
 
@@ -349,7 +352,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">K-means聚类
+          <h1 class="post-title" itemprop="name headline">k-means聚类
 
               
             
@@ -421,7 +424,7 @@
 
           
           
-            <span id="/2019/06/22/clustering/" class="leancloud_visitors" data-flag-title="K-means聚类">
+            <span id="/2019/06/22/clustering/" class="leancloud_visitors" data-flag-title="k-means聚类">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -452,7 +455,30 @@
       
 
       
-        <h2 id="无监督学习"><a href="#无监督学习" class="headerlink" title="无监督学习"></a>无监督学习</h2><h2 id="聚类模型"><a href="#聚类模型" class="headerlink" title="聚类模型"></a>聚类模型</h2><h3 id="距离度量"><a href="#距离度量" class="headerlink" title="距离度量"></a>距离度量</h3><h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><h3 id="随机初始化"><a href="#随机初始化" class="headerlink" title="随机初始化"></a>随机初始化</h3><h3 id="最大距离初始化"><a href="#最大距离初始化" class="headerlink" title="最大距离初始化"></a>最大距离初始化</h3><h3 id="K-means"><a href="#K-means" class="headerlink" title="K-means++"></a>K-means++</h3>
+        <h2 id="非监督学习"><a href="#非监督学习" class="headerlink" title="非监督学习"></a>非监督学习</h2><p>通常情况下，可以把机器学习分为监督学习、非监督学习和强化学习。<br>监督学习，比如分类任务，回归任务，训练数据是带有目标标签值的，目的是找到数据点与标签之间的映射关系。<br>对于非监督学习，它的数据是没有标记的，算法正是要通过对训练数据的学习自动探索数据的内在联系规律。<br>其中，研究最多的就是聚类。</p>
+<h2 id="聚类模型"><a href="#聚类模型" class="headerlink" title="聚类模型"></a>聚类模型</h2><p>聚类模型试图经过数据集的学习，将数据划分为若干不相交的子集，这些子集称之为“簇”。最终形成的簇结构对应的语义可能能够分析获得，也可能是一些潜在的关系，不能直观理解。<br>给定一批数据集，聚类模型可以将这些数据集自动划分为若干个类别，这就是聚类模型。<br>那么，如何自动划分呢？k-means算法是这样做的，可以分为以下几个步骤：</p>
+<ul>
+<li>初始化几个数据点作为类别的中心点；</li>
+<li>对于其他数据点只需要比较一下它们与中心点之间的距离，距离哪个中心点近，就自动归入该类别；</li>
+<li>数据点归类完成之后，更新类别的中心点，形成新的类别中心点；</li>
+<li>继续迭代2,3步，不断更新中心点的位置，直到中心点可以稳定收敛。</li>
+</ul>
+<h3 id="距离度量"><a href="#距离度量" class="headerlink" title="距离度量"></a>距离度量</h3><p>根据模型，我们需要先定义一下数据点到中心点的距离。<br>距离度量中最常用的是闵可夫斯基距离，也即p范数，对于两个u维的向量，闵可夫斯基距离定义如下：</p>
+<script type="math/tex; mode=display">
+\operatorname{dist}_{\mathrm{mk}}\left(\boldsymbol{x}_{i}, \boldsymbol{x}_{j}\right)=\left(\sum_{u=1}^{n}\left|x_{i u}-x_{j u}\right|^{p}\right)^{\frac{1}{p}}</script><p>当p=1时，为曼哈顿距离，$\operatorname{dist}_{\operatorname{man}}\left(\boldsymbol{x}_{i}, \boldsymbol{x}_{j}\right)=\left|\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right|_{1}=\sum_{u=1}^{n}\left|x_{i u}-x_{j u}\right|$<br>p=2时，为欧氏距离，$\operatorname{dist}_{\mathrm{ed}}\left(\boldsymbol{x}_{i}, \boldsymbol{x}_{j}\right)=\left|\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right|_{2}=\sqrt{\sum_{u=1}^{n}\left|x_{i u}-x_{j u}\right|^{2}}$<br>在训练数据集中，u代表数据的某一个属性，如果属性的重要度不一样，也可以使用加权的距离计算作为距离度量，加权距离 $\operatorname{dist}_{\mathrm{wmk}}\left(\boldsymbol{x}_{i}, \boldsymbol{x}_{j}\right)=\left(w_{1} \cdot\left|x_{i 1}-x_{j 1}\right|^{p}+\ldots+w_{n} \cdot\left|x_{i n}-x_{j n}\right|^{p}\right)^{\frac{1}{p}}$</p>
+<h3 id="k-means算法"><a href="#k-means算法" class="headerlink" title="k-means算法"></a>k-means算法</h3><p>k-means的算法采用欧氏距离进行计算。<br>算法看起来似乎很简单，但是随机初始化的几个点使模型对初始化点的位置很敏感，如果开始的几个点本来就选取到了一个簇内，或者仅仅两个点选取到了一个簇内，那么结果就会出现偏差。<br>比如下面几个数据点的聚类，如果k=3的聚类不小心初始化的点正好位于中间的红色点，那么之后的迭代稳定的结果只能是绿色方框的结果，每一行代表一类。<br>而如果一开始初始化选取的点就是横着的三个点，那么结果又会变为蓝色椭圆的类别划分。<br>直观上看，这几个点应该竖着分才是类别划分的最好方法。<br><img src="/images/201906/kmeansbadcase1.png" alt="随机初始化的缺陷"><br>那么，怎么解决这个问题呢？</p>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><h3 id="最大距离初始化"><a href="#最大距离初始化" class="headerlink" title="最大距离初始化"></a>最大距离初始化</h3><p>最大距离初始化的思路是这样的，既然初始化点如果有多个分到了同一个簇就会出错，那我在选取下一个中心点的时候距离前面的中心点尽可能远不就可以了吗？<br>按照这个思路，最大距离初始化的算法将随机初始化替换为经过k-1次的选取中心点的过程：</p>
+<ul>
+<li>先随机选取一个中心点；</li>
+<li>选取第k个中心点的时候，先计算所有点到前面中心点的距离，然后选择距前面中心点距离最远的点；</li>
+<li>依次迭代，初始化出k个中心点。</li>
+</ul>
+<p>这样，初始化的中心点就不会被选到同一个簇内了。<br>另外，这里计算一下初始化的算法复杂度。<br>首先需要进行k-1次迭代来选后面的k-1个中心点；<br>每次选择第t个中心点的时候，都需要计算(N-(t-1)) × （t-1）× d 次；<br>总共需要(k-1)(N-(t-1)) × （t-1）× d 次，也就是kNd的复杂度，这里N为样本个数，d为属性个数。</p>
+<p>这种改进方法虽然一定程度上解决了随机初始化的问题，但是却需要完美的数据分布。如果数据中存在噪声，由于异常点总是会距离正常分布的点比较远，那么初始化的中心点就大概率会选中其中的异常点！而异常点占据了其中的中心点，一般会独自成簇，其他本应该分开的簇则会挤到一起，类别划分仍然会出现问题。</p>
+<p>怎么能使初始化的点尽可能远又降低选到异常点的概率呢？</p>
+<h3 id="K-means"><a href="#K-means" class="headerlink" title="K-means++"></a>K-means++</h3><p>k-means++针对上面的问题在选取中心点的时候引入了概率。<br>它的思路是这样的，因为要使中心点尽可能的远，那么对于某一个点选中作为中心点的概率令其正比于到其他中心点的距离，也就是说，对于一个点，如果它的距离离其他中心点很远，选中成为中心点的概率就大，但这并不是绝对的。<br>于是，对于异常点来说，异常点的距离会很远，所以它选中的概率相对来说大一些。对于其他也比较远的正常点来说，它被选中的概率虽然没有那么大，但是正常点的数量往往要比异常点要大的多，这样一来，选中正常分布的数据作为中心点的概率就大大提升了，由此，避免了直接选取到异常点的尴尬。<br>举个简单的例子，假设有8个点，其中一个是异常点，异常点到中心点的距离为5，其他的点依次为1,2,2,1,1,2,2。用距离归一化一下选中的概率，可以得到选中异常点作为中心点的概率为5/16，而选中其他点的概率为11/16。<br>这样，当我们按照概率来选一个中心点的时候，就大概率会落到正常分布点的范围内。到这里，模型的缺陷就完美解决了。</p>
+<h2 id="参数选择"><a href="#参数选择" class="headerlink" title="参数选择"></a>参数选择</h2><p>k-means算法中k值的选择是一个非常重要的可调参数，一般采用elbow肘方法来选取。<br>如图，随着k值的增大，平方损失函数会逐渐减小，但对于有一定区分度的数据集来说，在达到某一个k值临界点的时候，损失降低会到达一个转折点，之后降低速率会变慢。这个转折的临界点就看作是聚类性能比较好的点。<br><img src="/images/201906/elbow.png" alt="elbow method"></p>
+
       
     </div>
 
@@ -709,7 +735,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#无监督学习"><span class="nav-number">1.</span> <span class="nav-text">无监督学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚类模型"><span class="nav-number">2.</span> <span class="nav-text">聚类模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#距离度量"><span class="nav-number">2.1.</span> <span class="nav-text">距离度量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">3.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#随机初始化"><span class="nav-number">3.1.</span> <span class="nav-text">随机初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最大距离初始化"><span class="nav-number">3.2.</span> <span class="nav-text">最大距离初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K-means"><span class="nav-number">3.3.</span> <span class="nav-text">K-means++</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#非监督学习"><span class="nav-number">1.</span> <span class="nav-text">非监督学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚类模型"><span class="nav-number">2.</span> <span class="nav-text">聚类模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#距离度量"><span class="nav-number">2.1.</span> <span class="nav-text">距离度量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k-means算法"><span class="nav-number">2.2.</span> <span class="nav-text">k-means算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">3.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#最大距离初始化"><span class="nav-number">3.1.</span> <span class="nav-text">最大距离初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K-means"><span class="nav-number">3.2.</span> <span class="nav-text">K-means++</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数选择"><span class="nav-number">4.</span> <span class="nav-text">参数选择</span></a></li></ol></div>
             
 
           </div>
@@ -884,7 +910,7 @@
 
 <script>
   var GUEST = ['nick', 'mail', 'link'];
-  var guest = 'nick,mail,link';
+  var guest = 'nick';
   guest = guest.split(',').filter(function(item) {
     return GUEST.indexOf(item) > -1;
   });
@@ -894,7 +920,7 @@
     notify: false,
     appId: '05HGOTY785fn5xJS55ra73gI-gzGzoHsz',
     appKey: 'HaPDiqJLDXd2b4xuiQmcOw7n',
-    placeholder: 'Just go go',
+    placeholder: '给个评论吧...',
     avatar: 'mm',
     meta: guest,
     pageSize: '10' || 10,
