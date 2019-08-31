@@ -404,9 +404,33 @@
           
             
             
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/07/02/segmentation/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/02/segmentation/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
+          
+            <span id="/2019/07/02/segmentation/" class="leancloud_visitors" data-flag-title="分词匹配算法">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
           
 
           
@@ -501,8 +525,8 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/20/xgboost/" rel="next" title="逐步理解XGBoost">
-                <i class="fa fa-chevron-left"></i> 逐步理解XGBoost
+              <a href="/2019/06/22/clustering/" rel="next" title="K-means聚类">
+                <i class="fa fa-chevron-left"></i> K-means聚类
               </a>
             
           </div>
@@ -534,6 +558,10 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+    </div>
 
   
 
@@ -582,7 +610,7 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -656,7 +684,11 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
                     
                       
                     
-                    <span class="site-state-item-count">14</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -874,6 +906,36 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
   
 
   
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '05HGOTY785fn5xJS55ra73gI-gzGzoHsz',
+    appKey: 'HaPDiqJLDXd2b4xuiQmcOw7n',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn'
+  });
+</script>
+
+
 
 
   

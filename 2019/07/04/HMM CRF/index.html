@@ -408,9 +408,33 @@
           
             
             
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/07/04/HMM CRF/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/04/HMM CRF/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
+          
+            <span id="/2019/07/04/HMM CRF/" class="leancloud_visitors" data-flag-title="理解HMM、CRF序列模型">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
           
 
           
@@ -563,6 +587,10 @@ P(\mathbf{y} | \mathbf{x})=\frac{1}{Z} \exp \left(\sum_{j} \sum_{i=1}^{n-1} \lam
           
 
   
+    <div class="comments" id="comments">
+    </div>
+
+  
 
 
 
@@ -609,7 +637,7 @@ P(\mathbf{y} | \mathbf{x})=\frac{1}{Z} \exp \left(\sum_{j} \sum_{i=1}^{n-1} \lam
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -683,7 +711,11 @@ P(\mathbf{y} | \mathbf{x})=\frac{1}{Z} \exp \left(\sum_{j} \sum_{i=1}^{n-1} \lam
                     
                       
                     
-                    <span class="site-state-item-count">14</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -901,6 +933,36 @@ P(\mathbf{y} | \mathbf{x})=\frac{1}{Z} \exp \left(\sum_{j} \sum_{i=1}^{n-1} \lam
   
 
   
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '05HGOTY785fn5xJS55ra73gI-gzGzoHsz',
+    appKey: 'HaPDiqJLDXd2b4xuiQmcOw7n',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn'
+  });
+</script>
+
+
 
 
   

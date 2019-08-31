@@ -100,16 +100,18 @@
 
 
 
-  <meta name="description" content="保持好奇，探索有趣。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Panda Yang&#39;s Blog">
-<meta property="og:url" content="https://yanfyang.github.io/tags/CRF/index.html">
+  <meta name="description" content="无监督学习聚类模型距离度量优化随机初始化最大距离初始化K-means++">
+<meta name="keywords" content="无监督学习,聚类">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K-means聚类">
+<meta property="og:url" content="https://yanfyang.github.io/2019/06/22/clustering/index.html">
 <meta property="og:site_name" content="Panda Yang&#39;s Blog">
-<meta property="og:description" content="保持好奇，探索有趣。">
+<meta property="og:description" content="无监督学习聚类模型距离度量优化随机初始化最大距离初始化K-means++">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-31T01:14:40.232Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Panda Yang&#39;s Blog">
-<meta name="twitter:description" content="保持好奇，探索有趣。">
+<meta name="twitter:title" content="K-means聚类">
+<meta name="twitter:description" content="无监督学习聚类模型距离度量优化随机初始化最大距离初始化K-means++">
 
 
 
@@ -117,7 +119,7 @@
 
   
   
-  <link rel="canonical" href="https://yanfyang.github.io/tags/CRF/">
+  <link rel="canonical" href="https://yanfyang.github.io/2019/06/22/clustering/">
 
 
 
@@ -127,7 +129,7 @@
   };
 </script>
 
-  <title>标签: CRF | Panda Yang's Blog</title>
+  <title>K-means聚类 | Panda Yang's Blog</title>
   
 
 
@@ -175,7 +177,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -234,7 +236,7 @@
         
         
           
-          <li class="menu-item menu-item-tags menu-item-active">
+          <li class="menu-item menu-item-tags">
 
     
     
@@ -310,80 +312,228 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>CRF<small>标签</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
+
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/06/22/clustering/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Panda">
+      <meta itemprop="description" content="保持好奇，探索有趣。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Panda Yang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-          <a class="post-title-link" href="/2019/07/04/HMM CRF/" itemprop="url">
-            
-              <span itemprop="name">理解HMM、CRF序列模型</span>
-            
-          </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">K-means聚类
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-07-04T21:48:13+08:00" content="2019-07-04">
-          07-04
-        </time>
-      </div>
+              
+            
+          </h1>
+        
 
-    </header>
-  </article>
+        <div class="post-meta">
+          <span class="post-time">
 
+            
+            
+            
 
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-22 21:05:13" itemprop="dateCreated datePublished" datetime="2019-06-22T21:05:13+08:00">2019-06-22</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/06/22/clustering/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/22/clustering/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/06/22/clustering/" class="leancloud_visitors" data-flag-title="K-means聚类">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="无监督学习"><a href="#无监督学习" class="headerlink" title="无监督学习"></a>无监督学习</h2><h2 id="聚类模型"><a href="#聚类模型" class="headerlink" title="聚类模型"></a>聚类模型</h2><h3 id="距离度量"><a href="#距离度量" class="headerlink" title="距离度量"></a>距离度量</h3><h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><h3 id="随机初始化"><a href="#随机初始化" class="headerlink" title="随机初始化"></a>随机初始化</h3><h3 id="最大距离初始化"><a href="#最大距离初始化" class="headerlink" title="最大距离初始化"></a>最大距离初始化</h3><h3 id="K-means"><a href="#K-means" class="headerlink" title="K-means++"></a>K-means++</h3>
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/无监督学习/" rel="tag"><i class="fa fa-tag"></i> 无监督学习</a>
+          
+            <a href="/tags/聚类/" rel="tag"><i class="fa fa-tag"></i> 聚类</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/20/xgboost/" rel="next" title="逐步理解XGBoost">
+                <i class="fa fa-chevron-left"></i> 逐步理解XGBoost
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/02/segmentation/" rel="prev" title="分词匹配算法">
+                分词匹配算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+  </div>
 
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
 
         </div>
         
@@ -403,8 +553,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -539,6 +698,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#无监督学习"><span class="nav-number">1.</span> <span class="nav-text">无监督学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚类模型"><span class="nav-number">2.</span> <span class="nav-text">聚类模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#距离度量"><span class="nav-number">2.1.</span> <span class="nav-text">距离度量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">3.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#随机初始化"><span class="nav-number">3.1.</span> <span class="nav-text">随机初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最大距离初始化"><span class="nav-number">3.2.</span> <span class="nav-text">最大距离初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K-means"><span class="nav-number">3.3.</span> <span class="nav-text">K-means++</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       
@@ -680,6 +856,10 @@
 
 
   
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
 
   
 
@@ -725,6 +905,8 @@
 
 
 
+
+  
 
 
   
