@@ -100,18 +100,20 @@
 
 
 
-  <meta name="description" content="规则匹配前向最大匹配前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。比如，我们有一个句子： 小明希望长大以后成为警察。我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}如果滑动窗口为5，那么我们会这样匹配  在第一个滑动窗口中，我们要切分的是  小明希望长   小明希望长  —》 不构成词语 小明希望    --》">
-<meta name="keywords" content="NLP分词">
+  <meta name="description" content="引入在文本挖掘中，文本信息经常会使用词和词组出现的频次或者是tfidf值组成的向量来表示。但是这种统计方法只能够表示出语料中出现的词语，而在语义上缺失了信息。 比如，当我们提到AMT和阿里腾讯的时候，其实表达的意思是一样的，但是这种语义在基于词频和tfidf值的方法下都不能体现出来。话题模型就是这样被提出来的，当用话题模型来对比的时候，模型会自动生成几个话题下可能会出现的词。比如有一个话题是互联网">
+<meta name="keywords" content="无监督学习,Topic Model">
 <meta property="og:type" content="article">
-<meta property="og:title" content="分词匹配算法">
-<meta property="og:url" content="https://yanfyang.github.io/2019/07/02/segmentation/index.html">
+<meta property="og:title" content="直观理解话题模型及应用">
+<meta property="og:url" content="https://yanfyang.github.io/2019/06/25/lda/index.html">
 <meta property="og:site_name" content="Fein Yang&#39;s Blog">
-<meta property="og:description" content="规则匹配前向最大匹配前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。比如，我们有一个句子： 小明希望长大以后成为警察。我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}如果滑动窗口为5，那么我们会这样匹配  在第一个滑动窗口中，我们要切分的是  小明希望长   小明希望长  —》 不构成词语 小明希望    --》">
+<meta property="og:description" content="引入在文本挖掘中，文本信息经常会使用词和词组出现的频次或者是tfidf值组成的向量来表示。但是这种统计方法只能够表示出语料中出现的词语，而在语义上缺失了信息。 比如，当我们提到AMT和阿里腾讯的时候，其实表达的意思是一样的，但是这种语义在基于词频和tfidf值的方法下都不能体现出来。话题模型就是这样被提出来的，当用话题模型来对比的时候，模型会自动生成几个话题下可能会出现的词。比如有一个话题是互联网">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-19T09:34:25.069Z">
+<meta property="og:image" content="https://yanfyang.github.io/images/201906/LDA.JPG">
+<meta property="og:updated_time" content="2019-09-01T16:16:21.919Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="分词匹配算法">
-<meta name="twitter:description" content="规则匹配前向最大匹配前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。比如，我们有一个句子： 小明希望长大以后成为警察。我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}如果滑动窗口为5，那么我们会这样匹配  在第一个滑动窗口中，我们要切分的是  小明希望长   小明希望长  —》 不构成词语 小明希望    --》">
+<meta name="twitter:title" content="直观理解话题模型及应用">
+<meta name="twitter:description" content="引入在文本挖掘中，文本信息经常会使用词和词组出现的频次或者是tfidf值组成的向量来表示。但是这种统计方法只能够表示出语料中出现的词语，而在语义上缺失了信息。 比如，当我们提到AMT和阿里腾讯的时候，其实表达的意思是一样的，但是这种语义在基于词频和tfidf值的方法下都不能体现出来。话题模型就是这样被提出来的，当用话题模型来对比的时候，模型会自动生成几个话题下可能会出现的词。比如有一个话题是互联网">
+<meta name="twitter:image" content="https://yanfyang.github.io/images/201906/LDA.JPG">
 
 
 
@@ -119,7 +121,7 @@
 
   
   
-  <link rel="canonical" href="https://yanfyang.github.io/2019/07/02/segmentation/">
+  <link rel="canonical" href="https://yanfyang.github.io/2019/06/25/lda/">
 
 
 
@@ -129,7 +131,7 @@
   };
 </script>
 
-  <title>分词匹配算法 | Fein Yang's Blog</title>
+  <title>直观理解话题模型及应用 | Fein Yang's Blog</title>
   
 
 
@@ -332,7 +334,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/07/02/segmentation/">
+    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/06/25/lda/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Fein">
@@ -349,7 +351,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">分词匹配算法
+          <h1 class="post-title" itemprop="name headline">直观理解话题模型及应用
 
               
             
@@ -375,7 +377,7 @@
                 
               
 
-              <time title="创建时间：2019-07-02 00:00:00" itemprop="dateCreated datePublished" datetime="2019-07-02T00:00:00+08:00">2019-07-02</time>
+              <time title="创建时间：2019-06-25 19:31:13" itemprop="dateCreated datePublished" datetime="2019-06-25T19:31:13+08:00">2019-06-25</time>
             
 
             
@@ -393,7 +395,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
 
                 
                 
@@ -412,8 +414,8 @@
                 </span>
             
                 <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/07/02/segmentation/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/02/segmentation/" itemprop="commentCount"></span>
+                <a href="/2019/06/25/lda/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/25/lda/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -421,7 +423,7 @@
 
           
           
-            <span id="/2019/07/02/segmentation/" class="leancloud_visitors" data-flag-title="分词匹配算法">
+            <span id="/2019/06/25/lda/" class="leancloud_visitors" data-flag-title="直观理解话题模型及应用">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -452,41 +454,37 @@
       
 
       
-        <h2 id="规则匹配"><a href="#规则匹配" class="headerlink" title="规则匹配"></a>规则匹配</h2><h3 id="前向最大匹配"><a href="#前向最大匹配" class="headerlink" title="前向最大匹配"></a>前向最大匹配</h3><p>前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。<br>比如，我们有一个句子： 小明希望长大以后成为警察。<br>我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}<br>如果滑动窗口为5，那么我们会这样匹配</p>
+        <h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>在文本挖掘中，文本信息经常会使用词和词组出现的频次或者是tfidf值组成的向量来表示。但是这种统计方法只能够表示出语料中出现的词语，而在语义上缺失了信息。 比如，当我们提到AMT和阿里腾讯的时候，其实表达的意思是一样的，但是这种语义在基于词频和tfidf值的方法下都不能体现出来。<br>话题模型就是这样被提出来的，当用话题模型来对比的时候，模型会自动生成几个话题下可能会出现的词。比如有一个话题是互联网公司，它下面会有 AMT、阿里、腾讯、电商、社交 等等比较相关的词。这样，在提到某一个词的时候，模型就会有能力识别出话题下的其他词跟它也是很相近的。</p>
+<h2 id="话题模型"><a href="#话题模型" class="headerlink" title="话题模型"></a>话题模型</h2><p>话题模型是一组生成式的有向图模型。理解之前先了解几个概念：</p>
 <ol>
-<li><p>在第一个滑动窗口中，我们要切分的是  小明希望长 </p>
-<p> 小明希望长  —》 不构成词语</p>
-<pre><code>小明希望    --》 不构成词语
-小明希      --》 不构成词语
-小明        --》 构成词语，从这里切分开
-</code></pre></li>
-<li><p>进入第二个滑动窗口，要切分的是  希望长大以</p>
-<p> 希望长大以  —》 不构成<br> 希望长大    —》 不构成<br> 希望长      —》 不构成<br> 希望        —》 构成， 从这里切分开</p>
-</li>
-<li><p>继续进入第三个滑动窗口，依次类推。</p>
-</li>
+<li>文档：文本数据集中的每一篇文本，可由一组词来表示；</li>
+<li>词：表示文本的基本单元，英语中对应一个单词，汉语中对应一个分完词后的词单元；</li>
+<li>话题：一系列相关的词构成一个话题，话题中的词存在一个概率分布，用来表示词在该话题中出现的概率；</li>
 </ol>
-<h3 id="后向最大匹配"><a href="#后向最大匹配" class="headerlink" title="后向最大匹配"></a>后向最大匹配</h3><p>后向最大匹配是说，在滑动窗口区域内，从开头处以次减词，来查看后面的部分是否可以构成词语，如果是，则切分开。<br>同样上面的例子，我们开始是从  后成为警察 来进行第一次匹配</p>
-<ol>
-<li>第一次，我们要匹配切分的是   后成为警察<br> 后成为警察  —》 不构成词语<br> 成为警察    —》 不构成词语<br> 为警察      —》 不构成词语<br> 警察        —》 构成词语，从这里切分开</li>
-<li>第二次，我们要匹配切分的是  大以后成为<br> 大以后成为  —》 不构成词语<br> 以后成为    —》 不构成词语<br> 后成为      —》 不构成词语<br> 成为        —》 构成词语，从这里切分开</li>
-<li>第三次，我们继续匹配剩余的  望长大以后， 以此类推…</li>
-</ol>
-<h2 id="基于统计概率方法"><a href="#基于统计概率方法" class="headerlink" title="基于统计概率方法"></a>基于统计概率方法</h2><p>为什么要提出基于词频的模型呢？ 由上面的模型可以看出，两个模型由于固定的窗口长度和匹配方向的原因，会出现分词的偏差。<br>比如 南京市长江大桥，如果词典里的词有 ‘南京、南京市、市长、长江、大桥’，<br>那么用前向匹配5个固定窗口的来切分，会被切分为 ‘ 南京 | 市长 | 江 | 大桥 ’；同样，用后向匹配5个固定窗口的来切分，则会被切分为 ‘ 南京市 | 长江 | 大桥 ’。 那么如何判定哪种分词方法更好呢？ 这显然是有问题的，于是基于概率统计的方法引入概率模型，模型不仅需要考虑词语本身，还同时考虑词语出现的概率（频次/频率）。</p>
-<h3 id="Unigram-LM-模型"><a href="#Unigram-LM-模型" class="headerlink" title="Unigram LM 模型"></a>Unigram LM 模型</h3><p><em>前提假设：朴素贝叶斯，即所有词语相互独立，联合概率可用各个词语概率乘积进行计算。</em><br>套用贝叶斯公式，将每个分词方案i作为预测的Y，将被分词的句子作为X，则可以表示为：</p>
+<p>因为有了话题的概念，在建模完成时我们可以通过每个话题的词汇进行大概的猜测和类别理解，这也是话题模型聚类的优势。<br>下面来看一下话题生成模型的假设。   </p>
+<h3 id="文本的生成"><a href="#文本的生成" class="headerlink" title="文本的生成"></a>文本的生成</h3><p>话题生成模型假设一篇文档是这样产生的，</p>
+<ul>
+<li>准备写一个词，先从K个主题中选出一个主题；</li>
+<li>从选出主题对应的V个词中再选出一个词写上去；</li>
+<li>继续写下一个词，循环前两个步骤。</li>
+</ul>
+<p>那么一篇文档i中出现某个词j的联合概率可以用下式表示，这里，w是词语，d是文档，z是主题。</p>
 <script type="math/tex; mode=display">
-P\left(Y_{i} | X\right) = P\left(X | Y_{i}\right) P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>因为在分词的场景下，我们无论采用哪种分词方法得到的句子X都是相同的，因此可将$P\left(X | Y_{i}\right)$看作1，式子简化为：</p>
-<script type="math/tex; mode=display">
-P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样，我们只需要取最大的$P\left(Y_{i}\right)$来进行分词就可以了，那么这个概率如何计算呢？<br>基于朴素贝叶斯的假设，我们可以认为各个词之间相互独立，$P\left(Y_{i}\right)$方案的概率就可以表示为分词方案中每个分词出现概率的乘积。<br>整个流程如下：</p>
-<blockquote>
-<p>a. 由语料库统计出词语的出现概率，构建词典存储起来；<br>b. 根据词语组合遍历出句子所有可能的分词方案；<br>c. 根据各个词语的频率计算分词方案的联合概率，得出分词方案的可能性；<br>d. 对比选出可能性最大的分词方案作为最后结果。</p>
-<ol>
-<li>计算量的优化：利用图模型，采用维特比算法，思想是每走一步都取最优。</li>
-<li>模型的问题：基于朴素贝叶斯，各个词语相互独立，未考虑到语序信息。</li>
-</ol>
-</blockquote>
-<h3 id="N-gram-模型"><a href="#N-gram-模型" class="headerlink" title="N-gram 模型"></a>N-gram 模型</h3><p>为了解决语序信息缺失的问题，可以用N-gram模型。<br>N-gram是说我们会假设一个词会跟前面的N个词有关，也就是马尔科夫假设。那么$P\left(Y_{i}\right)$的概率计算还需要引入条件概率进行建模。<br>以bi-gram为例，假设每个词语只跟上一个词语有关，方案$P\left(Y_{i}\right)$的概率变为下面的式子，其中xj为一个分词词语。</p>
-<script type="math/tex; mode=display">P(Y_{i}) = P(x_{1}) * P(x_{2}|x_{1}) * P(x_{3}|x_{2}) * P(x_{j-1}|x_{j}) * ... * P(x_{J}|x_{J-1})</script>
+\begin{aligned} P\left(d_{i}, w_{j}\right) &=P\left(d_{i}\right) P\left(w_{j} | d_{i}\right) \\ &=P\left(d_{i}\right) \sum_{k=1}^{K} P\left(w_{j} | z_{k}\right) P\left(z_{k} | d_{i}\right) \end{aligned}</script><p>我们希望这个联合概率最大，这样才符合看到的数据分布。那么就需要最大化$\theta=\left(P\left(w_{j} | z_{k}\right), P\left(z_{k} | d_{i}\right)\right)$，这两个概率都为未知量。</p>
+<h3 id="pLSA模型"><a href="#pLSA模型" class="headerlink" title="pLSA模型"></a>pLSA模型</h3><p>pLSA模型出自频率派，它认为变量出现是随机的，但是变量出现的概率是固定的，因此可以根据大数定理统计出概率分布。<br>对于模型中的两个未知概率，pLSA也认为概率值是固定的，这就可以用EM算法先初始化再求另一个参数的最大似然来求解。</p>
+<h3 id="LDA模型"><a href="#LDA模型" class="headerlink" title="LDA模型"></a>LDA模型</h3><p>LDA模型出自贝叶斯派，认为变量出现是随机的，也服从一个概率分布，不同的是贝叶斯派还认为这个概率分布也是由另一个分布参数决定的，并不是固定值这么简单。<br>于是LDA模型多了两个控制概率分布的参数，一个控制文档到话题的概率分布，一个控制话题到词的概率分布。<br>一篇文档生成的具体过程如下：</p>
+<ul>
+<li>先从狄利克雷分布β中取K个分布，K个分布对应了K个主题中词的分布概率；</li>
+<li>开始写这篇文档了，从狄利克雷分布α中取一个分布，分布决定了这篇文档中主题的概率分布；</li>
+<li>准备写一个词，先从主题分布中采样一个主题；</li>
+<li>从这个主题下对应词的概率分布中采样一个词，写上去；</li>
+<li>继续写下一个词，循环前面两个步骤；</li>
+</ul>
+<p>下图为西瓜书P338页的盘式计法图。</p>
+<p><img src="/images/201906/LDA.JPG" alt="LDA"><br>可以看出，LDA跟pLSA的模型定义差不多，只是在上面加了一层贝叶斯的参数框架。由于多了一层参数，LDA通常使用吉布斯采样或变分法进行近似推断。</p>
+<h2 id="Gensim库实现LDA模型"><a href="#Gensim库实现LDA模型" class="headerlink" title="Gensim库实现LDA模型"></a>Gensim库实现LDA模型</h2><p>使用的demo数据在这里<a href="/images/201906/ldadata.txt">数据</a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">from gensim import corpora, models</span><br><span class="line">import re</span><br><span class="line">import jieba</span><br><span class="line"></span><br><span class="line"><span class="comment">#清洗数据，停用词等</span></span><br><span class="line">def clean(sen):</span><br><span class="line">    stopwords=[<span class="string">'老师'</span>,<span class="string">'请问'</span>,<span class="string">'您好'</span>,<span class="string">'你好'</span>,<span class="string">'问一下'</span>,<span class="string">'请教'</span>,<span class="string">'请问'</span>,<span class="string">'为啥'</span>,<span class="string">'邹'</span>,<span class="string">'李'</span>,<span class="string">'另外'</span>,<span class="string">'其中'</span>,<span class="string">'是'</span>,<span class="string">'的'</span>,<span class="string">'吗'</span>,<span class="string">'我'</span>,<span class="string">'可以'</span>\</span><br><span class="line">              <span class="string">'了'</span>,<span class="string">'和'</span>,<span class="string">'怎么'</span>,<span class="string">'谢谢'</span>,<span class="string">'一个'</span>,<span class="string">'那'</span>,<span class="string">'还是'</span>,<span class="string">'要'</span>,<span class="string">'为'</span>,<span class="string">'啊'</span>,<span class="string">'这个'</span>,<span class="string">'能'</span>,<span class="string">'已经'</span>]</span><br><span class="line">    sen = re.sub(r<span class="string">'[！？. ，：:\-。=@\d]'</span>,<span class="string">''</span>,sen)</span><br><span class="line">    sen = [i  <span class="keyword">for</span> i <span class="keyword">in</span> jieba.cut(sen,HMM=False) <span class="keyword">if</span> i not <span class="keyword">in</span> stopwords]</span><br><span class="line">    <span class="built_in">return</span> sen</span><br><span class="line"></span><br><span class="line">data = pd.read_csv(<span class="string">'ldadata.txt'</span>,header=None,names=[<span class="string">'sen'</span>])</span><br><span class="line">data.sen = data.sen.apply(clean)</span><br><span class="line">dictionary = corpora.Dictionary(list(data.sen))</span><br><span class="line">corpus = [dictionary.doc2bow(text) <span class="keyword">for</span> text <span class="keyword">in</span> list(data.sen)]</span><br><span class="line">lda = models.LdaModel(corpus=corpus, id2word=dictionary, num_topics=5)</span><br><span class="line"><span class="comment"># 查看分出来的五个话题中的词语</span></span><br><span class="line">topics = lda.print_topics(10)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> topics:</span><br><span class="line">    <span class="built_in">print</span>(i)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 来了一个新文本，判断属于哪个话题</span></span><br><span class="line">new_sen = <span class="string">'资产负债表资产总和负数怎么办，如何调整'</span></span><br><span class="line">token = dictionary.doc2bow(clean(new_sen)) </span><br><span class="line">topic_prob = lda.get_document_topics(token)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">'new sentence topic prob:'</span>,topic_prob)</span><br></pre></td></tr></table></figure></p>
+<h2 id="一些参考资料"><a href="#一些参考资料" class="headerlink" title="一些参考资料"></a>一些参考资料</h2><p><a href="http://mlg.eng.cam.ac.uk/zoubin/nipstut.pdf" target="_blank" rel="noopener">概率图模型串讲</a><br><a href="https://blog.csdn.net/v_july_v/article/details/41209515" target="_blank" rel="noopener">July博客</a></p>
+
       
     </div>
 
@@ -512,7 +510,9 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
         
         <div class="post-tags">
           
-            <a href="/tags/NLP分词/" rel="tag"><i class="fa fa-tag"></i> NLP分词</a>
+            <a href="/tags/无监督学习/" rel="tag"><i class="fa fa-tag"></i> 无监督学习</a>
+          
+            <a href="/tags/Topic-Model/" rel="tag"><i class="fa fa-tag"></i> Topic Model</a>
           
         </div>
       
@@ -525,8 +525,8 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/25/lda/" rel="next" title="直观理解话题模型及应用">
-                <i class="fa fa-chevron-left"></i> 直观理解话题模型及应用
+              <a href="/2019/06/22/clustering/" rel="next" title="k-means聚类">
+                <i class="fa fa-chevron-left"></i> k-means聚类
               </a>
             
           </div>
@@ -535,8 +535,8 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/07/03/word2vec/" rel="prev" title="从Word2Vec到Doc2Vec">
-                从Word2Vec到Doc2Vec <i class="fa fa-chevron-right"></i>
+              <a href="/2019/07/02/segmentation/" rel="prev" title="分词匹配算法">
+                分词匹配算法 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -745,7 +745,7 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#规则匹配"><span class="nav-number">1.</span> <span class="nav-text">规则匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前向最大匹配"><span class="nav-number">1.1.</span> <span class="nav-text">前向最大匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后向最大匹配"><span class="nav-number">1.2.</span> <span class="nav-text">后向最大匹配</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于统计概率方法"><span class="nav-number">2.</span> <span class="nav-text">基于统计概率方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Unigram-LM-模型"><span class="nav-number">2.1.</span> <span class="nav-text">Unigram LM 模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#N-gram-模型"><span class="nav-number">2.2.</span> <span class="nav-text">N-gram 模型</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引入"><span class="nav-number">1.</span> <span class="nav-text">引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#话题模型"><span class="nav-number">2.</span> <span class="nav-text">话题模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文本的生成"><span class="nav-number">2.1.</span> <span class="nav-text">文本的生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pLSA模型"><span class="nav-number">2.2.</span> <span class="nav-text">pLSA模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LDA模型"><span class="nav-number">2.3.</span> <span class="nav-text">LDA模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gensim库实现LDA模型"><span class="nav-number">3.</span> <span class="nav-text">Gensim库实现LDA模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些参考资料"><span class="nav-number">4.</span> <span class="nav-text">一些参考资料</span></a></li></ol></div>
             
 
           </div>
