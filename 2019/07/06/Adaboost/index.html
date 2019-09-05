@@ -100,16 +100,18 @@
 
 
 
-  <meta name="description" content="保持好奇，探索有趣。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Fein Yang&#39;s Blog">
-<meta property="og:url" content="https://yanfyang.github.io/tags/HMM/index.html">
+  <meta name="description" content="Adaboost简述Adaboost是集成学习方法boosting下的代表算法。我们知道提升方法是学习过程中逐步调整训练数据的权重分布来学习一堆弱学习器的集合，最终得到强学习器的过程。根据描述，有两个问题要解决：  训练过程中如何调整训练数据的权重？ 如何将弱学习器集成起来，即如何得到各个弱学习器集成时的系数？  Adaboost是这样解决的：  对于第一个问题，Adaboost会将训练过程中分类">
+<meta name="keywords" content="集成算法,Boosting">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Adaboost小结">
+<meta property="og:url" content="https://yanfyang.github.io/2019/07/06/Adaboost/index.html">
 <meta property="og:site_name" content="Fein Yang&#39;s Blog">
-<meta property="og:description" content="保持好奇，探索有趣。">
+<meta property="og:description" content="Adaboost简述Adaboost是集成学习方法boosting下的代表算法。我们知道提升方法是学习过程中逐步调整训练数据的权重分布来学习一堆弱学习器的集合，最终得到强学习器的过程。根据描述，有两个问题要解决：  训练过程中如何调整训练数据的权重？ 如何将弱学习器集成起来，即如何得到各个弱学习器集成时的系数？  Adaboost是这样解决的：  对于第一个问题，Adaboost会将训练过程中分类">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-04T03:25:00.376Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Fein Yang&#39;s Blog">
-<meta name="twitter:description" content="保持好奇，探索有趣。">
+<meta name="twitter:title" content="Adaboost小结">
+<meta name="twitter:description" content="Adaboost简述Adaboost是集成学习方法boosting下的代表算法。我们知道提升方法是学习过程中逐步调整训练数据的权重分布来学习一堆弱学习器的集合，最终得到强学习器的过程。根据描述，有两个问题要解决：  训练过程中如何调整训练数据的权重？ 如何将弱学习器集成起来，即如何得到各个弱学习器集成时的系数？  Adaboost是这样解决的：  对于第一个问题，Adaboost会将训练过程中分类">
 
 
 
@@ -117,7 +119,7 @@
 
   
   
-  <link rel="canonical" href="https://yanfyang.github.io/tags/HMM/">
+  <link rel="canonical" href="https://yanfyang.github.io/2019/07/06/Adaboost/">
 
 
 
@@ -127,7 +129,7 @@
   };
 </script>
 
-  <title>标签: HMM | Fein Yang's Blog</title>
+  <title>Adaboost小结 | Fein Yang's Blog</title>
   
 
 
@@ -175,7 +177,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -234,7 +236,7 @@
         
         
           
-          <li class="menu-item menu-item-tags menu-item-active">
+          <li class="menu-item menu-item-tags">
 
     
     
@@ -310,80 +312,249 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>HMM<small>标签</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
+
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/07/06/Adaboost/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Fein">
+      <meta itemprop="description" content="保持好奇，探索有趣。">
+      <meta itemprop="image" content="/images/logo.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fein Yang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-          <a class="post-title-link" href="/2019/07/04/HMM CRF/" itemprop="url">
-            
-              <span itemprop="name">理解HMM、CRF序列模型</span>
-            
-          </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">Adaboost小结
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-07-04T21:48:13+08:00" content="2019-07-04">
-          07-04
-        </time>
-      </div>
+              
+            
+          </h1>
+        
 
-    </header>
-  </article>
+        <div class="post-meta">
+          <span class="post-time">
 
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-06 22:05:13" itemprop="dateCreated datePublished" datetime="2019-07-06T22:05:13+08:00">2019-07-06</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/07/06/Adaboost/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/06/Adaboost/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/07/06/Adaboost/" class="leancloud_visitors" data-flag-title="Adaboost小结">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Adaboost简述"><a href="#Adaboost简述" class="headerlink" title="Adaboost简述"></a>Adaboost简述</h2><p>Adaboost是集成学习方法boosting下的代表算法。我们知道提升方法是学习过程中逐步调整训练数据的权重分布来学习一堆弱学习器的集合，最终得到强学习器的过程。<br>根据描述，有两个问题要解决：</p>
+<ol>
+<li>训练过程中如何调整训练数据的权重？</li>
+<li>如何将弱学习器集成起来，即如何得到各个弱学习器集成时的系数？</li>
+</ol>
+<p>Adaboost是这样解决的：</p>
+<ol>
+<li>对于第一个问题，Adaboost会将训练过程中分类错误的样本在下一轮训练时提高它的权重，用于重点训练，而分类已经正确的样本降低它的权重，弱化下一次训练时的影响。</li>
+<li>根据各个基学习器的误差率来集成模型，基学习器的误差率越小，集成时给它的权重就越大，让它发挥主要作用。</li>
+</ol>
+<h2 id="Adaboost训练过程"><a href="#Adaboost训练过程" class="headerlink" title="Adaboost训练过程"></a>Adaboost训练过程</h2><p>输入：样本数据集 $T={(x_{1},y_{1}),(x_{2},y_{2}),…,(x_{N},y_{N})}$，弱学习器算法；<br>输出：最终分类器 G（x）<br>过程：<br>1 初始化权重分布，设为同等看待，每个权重都为1/N；<br>2 对 m = 1,2,..M</p>
+<ol>
+<li>训练基学习器，使其在该权重分布上的损失函数最小，得到学习器$G_{m}(x)$；</li>
+<li>计算G的分类误差率，$e_{m}$ = 分错的样本个数 / 全部样本个数；</li>
+<li>根据误差率e<strong>计算G集成时对应的系数</strong>，$\alpha_{m}=\frac{1}{2} \ln \frac{1-e_{m}}{e_{m}}$， 这个系数分配确保只有误差率小于一半的时候系数才大于0，且与1/e正相关，误差率越小系数越大。</li>
+<li><strong>更新训练集的权重</strong>分布，<script type="math/tex; mode=display">
+w_{m+1, i}=\left\{\begin{array}{ll}{\frac{w_{m i}}{Z_{m}} \mathrm{e}^{-\alpha_{m}},} & {G_{m}\left(x_{i}\right)=y_{i}} \\ {\frac{w_{m i}}{Z_{m}} \mathrm{e}^{\alpha_{m}},} & {G_{m}\left(x_{i}\right) \neq y_{i}}\end{array}\right.</script>Zm为规范化因子，可以使权重分布成为一个概率分布。对于基学习器预测错误的样本，分配给它的权重是正确样本权重的$e^{\alpha_{m}}$倍。 算法就是这样调整训练数据分布的。</li>
+</ol>
+<p>3 最终学习器表示为基学习器线性叠加</p>
+<script type="math/tex; mode=display">
+G(x)=\operatorname{sign}(f(x))=\operatorname{sign}\left(\sum_{m=1}^{M} \alpha_{m} G_{m}(x)\right)</script><h2 id="Adaboost的应用"><a href="#Adaboost的应用" class="headerlink" title="Adaboost的应用"></a>Adaboost的应用</h2><p>boosting方法用在决策树模型上就是提升决策树，之后还有改进的梯度提升决策树，XGBoost等。<br>XGBoost原理请看<a href="https://yanfyang.github.io/2019/06/20/xgboost/#more">这里</a></p>
 
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/集成算法/" rel="tag"><i class="fa fa-tag"></i> 集成算法</a>
+          
+            <a href="/tags/Boosting/" rel="tag"><i class="fa fa-tag"></i> Boosting</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/04/HMM CRF/" rel="next" title="理解HMM、CRF序列模型">
+                <i class="fa fa-chevron-left"></i> 理解HMM、CRF序列模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/10/transformer/" rel="prev" title="Transformer">
+                Transformer <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+  </div>
 
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
 
         </div>
         
@@ -403,8 +574,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -550,6 +730,23 @@
       </div>
 
       
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Adaboost简述"><span class="nav-number">1.</span> <span class="nav-text">Adaboost简述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adaboost训练过程"><span class="nav-number">2.</span> <span class="nav-text">Adaboost训练过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adaboost的应用"><span class="nav-number">3.</span> <span class="nav-text">Adaboost的应用</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
 
       
 
@@ -690,6 +887,10 @@
 
 
   
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
 
   
 
@@ -735,6 +936,8 @@
 
 
 
+
+  
 
 
   

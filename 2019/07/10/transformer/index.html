@@ -100,21 +100,25 @@
 
 
 
-  <meta name="description" content="非监督学习通常情况下，可以把机器学习分为监督学习、非监督学习和强化学习。监督学习，比如分类任务，回归任务，训练数据是带有目标标签值的，目的是找到数据点与标签之间的映射关系。对于非监督学习，它的数据是没有标记的，算法正是要通过对训练数据的学习自动探索数据的内在联系规律。其中，研究最多的就是聚类。 聚类模型聚类模型试图经过数据集的学习，将数据划分为若干不相交的子集，这些子集称之为“簇”。最终形成的簇结">
-<meta name="keywords" content="无监督学习,聚类">
+  <meta name="description" content="paper2014年seq2seq的encoder-decoder模型在翻译方面取得SOTA结果以后，Attention机制就被广泛关注。但大多是基于RNN等循环网络来做，Attention只是作为网络结构的巧妙设计出现。但是RNN循环神经网络的缺陷很明显，为了拿到上一个状态的结果，下一个状态只能等待，这样就只能一个step一个step来计算，不能并行化处理。于是，也有了CNN的发挥空间，CNN可">
+<meta name="keywords" content="Transformer,Seq2Seq">
 <meta property="og:type" content="article">
-<meta property="og:title" content="k-means聚类">
-<meta property="og:url" content="https://yanfyang.github.io/2019/06/22/clustering/index.html">
+<meta property="og:title" content="Transformer">
+<meta property="og:url" content="https://yanfyang.github.io/2019/07/10/transformer/index.html">
 <meta property="og:site_name" content="Fein Yang&#39;s Blog">
-<meta property="og:description" content="非监督学习通常情况下，可以把机器学习分为监督学习、非监督学习和强化学习。监督学习，比如分类任务，回归任务，训练数据是带有目标标签值的，目的是找到数据点与标签之间的映射关系。对于非监督学习，它的数据是没有标记的，算法正是要通过对训练数据的学习自动探索数据的内在联系规律。其中，研究最多的就是聚类。 聚类模型聚类模型试图经过数据集的学习，将数据划分为若干不相交的子集，这些子集称之为“簇”。最终形成的簇结">
+<meta property="og:description" content="paper2014年seq2seq的encoder-decoder模型在翻译方面取得SOTA结果以后，Attention机制就被广泛关注。但大多是基于RNN等循环网络来做，Attention只是作为网络结构的巧妙设计出现。但是RNN循环神经网络的缺陷很明显，为了拿到上一个状态的结果，下一个状态只能等待，这样就只能一个step一个step来计算，不能并行化处理。于是，也有了CNN的发挥空间，CNN可">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://yanfyang.github.io/images/201906/kmeansbadcase1.png">
-<meta property="og:image" content="https://yanfyang.github.io/images/201906/elbow.png">
-<meta property="og:updated_time" content="2019-08-31T12:08:44.806Z">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/selfattentionseq2seq.jpg">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/selfattention.jpg">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/transcalvis.jpg">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/multical.JPG">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/multihead.jpg">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/transformer.jpg">
+<meta property="og:updated_time" content="2019-09-05T14:03:22.629Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="k-means聚类">
-<meta name="twitter:description" content="非监督学习通常情况下，可以把机器学习分为监督学习、非监督学习和强化学习。监督学习，比如分类任务，回归任务，训练数据是带有目标标签值的，目的是找到数据点与标签之间的映射关系。对于非监督学习，它的数据是没有标记的，算法正是要通过对训练数据的学习自动探索数据的内在联系规律。其中，研究最多的就是聚类。 聚类模型聚类模型试图经过数据集的学习，将数据划分为若干不相交的子集，这些子集称之为“簇”。最终形成的簇结">
-<meta name="twitter:image" content="https://yanfyang.github.io/images/201906/kmeansbadcase1.png">
+<meta name="twitter:title" content="Transformer">
+<meta name="twitter:description" content="paper2014年seq2seq的encoder-decoder模型在翻译方面取得SOTA结果以后，Attention机制就被广泛关注。但大多是基于RNN等循环网络来做，Attention只是作为网络结构的巧妙设计出现。但是RNN循环神经网络的缺陷很明显，为了拿到上一个状态的结果，下一个状态只能等待，这样就只能一个step一个step来计算，不能并行化处理。于是，也有了CNN的发挥空间，CNN可">
+<meta name="twitter:image" content="https://yanfyang.github.io/images/201907/selfattentionseq2seq.jpg">
 
 
 
@@ -122,7 +126,7 @@
 
   
   
-  <link rel="canonical" href="https://yanfyang.github.io/2019/06/22/clustering/">
+  <link rel="canonical" href="https://yanfyang.github.io/2019/07/10/transformer/">
 
 
 
@@ -132,7 +136,7 @@
   };
 </script>
 
-  <title>k-means聚类 | Fein Yang's Blog</title>
+  <title>Transformer | Fein Yang's Blog</title>
   
 
 
@@ -335,7 +339,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/06/22/clustering/">
+    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/07/10/transformer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Fein">
@@ -352,7 +356,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">k-means聚类
+          <h1 class="post-title" itemprop="name headline">Transformer
 
               
             
@@ -378,7 +382,7 @@
                 
               
 
-              <time title="创建时间：2019-06-22 21:05:13" itemprop="dateCreated datePublished" datetime="2019-06-22T21:05:13+08:00">2019-06-22</time>
+              <time title="创建时间：2019-07-10 22:05:13" itemprop="dateCreated datePublished" datetime="2019-07-10T22:05:13+08:00">2019-07-10</time>
             
 
             
@@ -396,7 +400,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/读paper/" itemprop="url" rel="index"><span itemprop="name">读paper</span></a></span>
 
                 
                 
@@ -415,8 +419,8 @@
                 </span>
             
                 <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/06/22/clustering/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/22/clustering/" itemprop="commentCount"></span>
+                <a href="/2019/07/10/transformer/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/10/transformer/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -424,7 +428,7 @@
 
           
           
-            <span id="/2019/06/22/clustering/" class="leancloud_visitors" data-flag-title="k-means聚类">
+            <span id="/2019/07/10/transformer/" class="leancloud_visitors" data-flag-title="Transformer">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -455,29 +459,26 @@
       
 
       
-        <h2 id="非监督学习"><a href="#非监督学习" class="headerlink" title="非监督学习"></a>非监督学习</h2><p>通常情况下，可以把机器学习分为监督学习、非监督学习和强化学习。<br>监督学习，比如分类任务，回归任务，训练数据是带有目标标签值的，目的是找到数据点与标签之间的映射关系。<br>对于非监督学习，它的数据是没有标记的，算法正是要通过对训练数据的学习自动探索数据的内在联系规律。<br>其中，研究最多的就是聚类。</p>
-<h2 id="聚类模型"><a href="#聚类模型" class="headerlink" title="聚类模型"></a>聚类模型</h2><p>聚类模型试图经过数据集的学习，将数据划分为若干不相交的子集，这些子集称之为“簇”。最终形成的簇结构对应的语义可能能够分析获得，也可能是一些潜在的关系，不能直观理解。<br>给定一批数据集，聚类模型可以将这些数据集自动划分为若干个类别，这就是聚类模型。<br>那么，如何自动划分呢？k-means算法是这样做的，可以分为以下几个步骤：</p>
-<ul>
-<li>初始化几个数据点作为类别的中心点；</li>
-<li>对于其他数据点只需要比较一下它们与中心点之间的距离，距离哪个中心点近，就自动归入该类别；</li>
-<li>数据点归类完成之后，更新类别的中心点，形成新的类别中心点；</li>
-<li>继续迭代2,3步，不断更新中心点的位置，直到中心点可以稳定收敛。</li>
-</ul>
-<h3 id="距离度量"><a href="#距离度量" class="headerlink" title="距离度量"></a>距离度量</h3><p>根据模型，我们需要先定义一下数据点到中心点的距离。<br>距离度量中最常用的是闵可夫斯基距离，也即p范数，对于两个u维的向量，闵可夫斯基距离定义如下：</p>
-<script type="math/tex; mode=display">
-\operatorname{dist}_{\mathrm{mk}}\left(\boldsymbol{x}_{i}, \boldsymbol{x}_{j}\right)=\left(\sum_{u=1}^{n}\left|x_{i u}-x_{j u}\right|^{p}\right)^{\frac{1}{p}}</script><p>当p=1时，为曼哈顿距离，$\operatorname{dist}_{\operatorname{man}}\left(\boldsymbol{x}_{i}, \boldsymbol{x}_{j}\right)=\left|\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right|_{1}=\sum_{u=1}^{n}\left|x_{i u}-x_{j u}\right|$<br>p=2时，为欧氏距离，$\operatorname{dist}_{\mathrm{ed}}\left(\boldsymbol{x}_{i}, \boldsymbol{x}_{j}\right)=\left|\boldsymbol{x}_{i}-\boldsymbol{x}_{j}\right|_{2}=\sqrt{\sum_{u=1}^{n}\left|x_{i u}-x_{j u}\right|^{2}}$<br>在训练数据集中，u代表数据的某一个属性，如果属性的重要度不一样，也可以使用加权的距离计算作为距离度量，加权距离 $\operatorname{dist}_{\mathrm{wmk}}\left(\boldsymbol{x}_{i}, \boldsymbol{x}_{j}\right)=\left(w_{1} \cdot\left|x_{i 1}-x_{j 1}\right|^{p}+\ldots+w_{n} \cdot\left|x_{i n}-x_{j n}\right|^{p}\right)^{\frac{1}{p}}$</p>
-<h3 id="k-means算法"><a href="#k-means算法" class="headerlink" title="k-means算法"></a>k-means算法</h3><p>k-means的算法采用欧氏距离进行计算。<br>算法看起来似乎很简单，但是随机初始化的几个点使模型对初始化点的位置很敏感，如果开始的几个点本来就选取到了一个簇内，或者仅仅两个点选取到了一个簇内，那么结果就会出现偏差。<br>比如下面几个数据点的聚类，如果k=3的聚类不小心初始化的点正好位于中间的红色点，那么之后的迭代稳定的结果只能是绿色方框的结果，每一行代表一类。<br>而如果一开始初始化选取的点就是横着的三个点，那么结果又会变为蓝色椭圆的类别划分。<br>直观上看，这几个点应该竖着分才是类别划分的最好方法。<br><img src="/images/201906/kmeansbadcase1.png" alt="随机初始化的缺陷"><br>那么，怎么解决这个问题呢？</p>
-<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><h3 id="最大距离初始化"><a href="#最大距离初始化" class="headerlink" title="最大距离初始化"></a>最大距离初始化</h3><p>最大距离初始化的思路是这样的，既然初始化点如果有多个分到了同一个簇就会出错，那我在选取下一个中心点的时候距离前面的中心点尽可能远不就可以了吗？<br>按照这个思路，最大距离初始化的算法将随机初始化替换为经过k-1次的选取中心点的过程：</p>
-<ul>
-<li>先随机选取一个中心点；</li>
-<li>选取第k个中心点的时候，先计算所有点到前面中心点的距离，然后选择距前面中心点距离最远的点；</li>
-<li>依次迭代，初始化出k个中心点。</li>
-</ul>
-<p>这样，初始化的中心点就不会被选到同一个簇内了。<br>另外，这里计算一下初始化的算法复杂度。<br>首先需要进行k-1次迭代来选后面的k-1个中心点；<br>每次选择第t个中心点的时候，都需要计算(N-(t-1)) × （t-1）× d 次；<br>总共需要(k-1)(N-(t-1)) × （t-1）× d 次，也就是kNd的复杂度，这里N为样本个数，d为属性个数。</p>
-<p>这种改进方法虽然一定程度上解决了随机初始化的问题，但是却需要完美的数据分布。如果数据中存在噪声，由于异常点总是会距离正常分布的点比较远，那么初始化的中心点就大概率会选中其中的异常点！而异常点占据了其中的中心点，一般会独自成簇，其他本应该分开的簇则会挤到一起，类别划分仍然会出现问题。</p>
-<p>怎么能使初始化的点尽可能远又降低选到异常点的概率呢？</p>
-<h3 id="K-means"><a href="#K-means" class="headerlink" title="K-means++"></a>K-means++</h3><p>k-means++针对上面的问题在选取中心点的时候引入了概率。<br>它的思路是这样的，因为要使中心点尽可能的远，那么对于某一个点选中作为中心点的概率令其正比于到其他中心点的距离，也就是说，对于一个点，如果它的距离离其他中心点很远，选中成为中心点的概率就大，但这并不是绝对的。<br>于是，对于异常点来说，异常点的距离会很远，所以它选中的概率相对来说大一些。对于其他也比较远的正常点来说，它被选中的概率虽然没有那么大，但是正常点的数量往往要比异常点要大的多，这样一来，选中正常分布的数据作为中心点的概率就大大提升了，由此，避免了直接选取到异常点的尴尬。<br>举个简单的例子，假设有8个点，其中一个是异常点，异常点到中心点的距离为5，其他的点依次为1,2,2,1,1,2,2。用距离归一化一下选中的概率，可以得到选中异常点作为中心点的概率为5/16，而选中其他点的概率为11/16。<br>这样，当我们按照概率来选一个中心点的时候，就大概率会落到正常分布点的范围内。到这里，模型的缺陷就完美解决了。</p>
-<h2 id="参数选择"><a href="#参数选择" class="headerlink" title="参数选择"></a>参数选择</h2><p>k-means算法中k值的选择是一个非常重要的可调参数，一般采用elbow肘方法来选取。<br>如图，随着k值的增大，平方损失函数会逐渐减小，但对于有一定区分度的数据集来说，在达到某一个k值临界点的时候，损失降低会到达一个转折点，之后降低速率会变慢。这个转折的临界点就看作是聚类性能比较好的点。<br><img src="/images/201906/elbow.png" alt="elbow method"></p>
+        <h2 id="paper"><a href="#paper" class="headerlink" title="paper"></a>paper</h2><p>2014年seq2seq的encoder-decoder模型在翻译方面取得SOTA结果以后，Attention机制就被广泛关注。但大多是基于RNN等循环网络来做，Attention只是作为网络结构的巧妙设计出现。<br>但是RNN循环神经网络的缺陷很明显，为了拿到上一个状态的结果，下一个状态只能等待，这样就只能一个step一个step来计算，不能并行化处理。于是，也有了CNN的发挥空间，CNN可以抽取不同长度字词的信息，而且通过加深网络，理论上就能得到任意长度的信息，但是CNN也有一些问题，比如为了拿到长的记忆，网络就必须加深，浅层的网络仍然不能得到长时记忆。<br>2017年，Google的大神发了这篇论文，说原来Attention也可以脱离RNN独自使用，仅仅只用self attention就可以替代RNN、CNN的网络结构来提取信息！而且self attention的结构很简单，用矩阵并行计算的话也就只需要做一堆矩阵相乘就可以，Amazing…<br>论文传送：<a href="https://arxiv.org/pdf/1706.03762v5.pdf" target="_blank" rel="noopener">Attention is all you need | 2017</a></p>
+<h2 id="模型基础"><a href="#模型基础" class="headerlink" title="模型基础"></a>模型基础</h2><h3 id="Self-Attention"><a href="#Self-Attention" class="headerlink" title="Self Attention"></a>Self Attention</h3><p>注意力机制是说我们在提取信息的时候一般不会大范围的对全貌平均用力，而是更可能会根据情景焦聚到某一点或者某一片范围内。<br>比如 The animal didn’t across the street, because it was too tried. 当翻译这句话的时候，对于it的翻译就会更希望获取animal的信息，而其他的信息可以弱化。<br>Attention机制就提供了这样的设计，它对于输入会拆分成三部分: query，key和value。<br>Self Attention 的序列到序列模型建立需要做如下步骤，对于序列中的每项输入，也就是每个词：</p>
+<ol>
+<li>拿这个词的query去和其他词的key进行点乘，得到相似度权重；</li>
+<li>将所有的权重进行softmax归一化，就得到了每个词的Attention权重向量；</li>
+<li>计算所有词的加权和作为这一步的输出；</li>
+</ol>
+<p>最终就得到了Self Attention的输出序列，示意图如下，左图为seq2seq框架，中图为Attention计算和输出的具体步骤，出自台大李宏毅教授的课件。右图为有两个词序列的自注意力模型的计算具体过程，出自jalammar的可视化博客。</p>
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/201907/selfattentionseq2seq.jpg" title="Self Attention序列模型框架" width="225" height="400"></div>
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/201907/selfattention.jpg" title="Self Attention每个词的输出计算" width="225" height="400"></div>
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/201907/transcalvis.jpg" title="Self Attention计算可视化" width="220" height="300"></div>
+<div style="clear:both;"></div>
+
+<h3 id="Multi-head-Attention"><a href="#Multi-head-Attention" class="headerlink" title="Multi-head Attention"></a>Multi-head Attention</h3><p>多头的注意力模型（忽略翻译的不规范哈），是多个Self Attention各自进行独立计算，然后将结果拼接起来，生成更大的矩阵。当然，如果觉得维度太高，还可以加一层全连接W进行降维。之后的输出就跟单个的Self Attention的过程一样了。<br>Multi-head Attention从注意力的可视化来看，不同的Attention负责抽取序列中不同的特征，比如有些偏重于局部信息，有些可以观察到全局的信息，最后将这些信息融合起来得到更综合的信息特征。<br>体会一下，有些类似于CNN中使用不同的kernel进行叠加抽取不同长度词语的信息，但是CNN中的kernel的大小需要手动设置，比如textCNN中作者用了3,4,5大小的kernel进行叠加，而这里Attention机制可以由模型自主学习，更自动化。<br>过程如下图，左边为模型中单个自注意力的计算，右图为模型中多个自注意力的拼接计算。</p>
+<div style="float:left;border:solid 1px 000;margin:5px;"><img src="/images/201907/multical.JPG" title="Multi-head Attention计算" width="280" height="456"></div>
+<div style="float:left;border:solid 1px 000;margin:5px;"><img src="/images/201907/multihead.jpg" title="Multi-head Attention集成" width="280" height="456"></div>
+<div style="clear:both;"></div>
+
+<h2 id="Transformer"><a href="#Transformer" class="headerlink" title="Transformer"></a>Transformer</h2><p>有了多头注意力基础模型，把它加深几层，然后组织到encoder - decoder 的框架中，就变成了Transformer。<br>如下为transformer的结构图，图中灰色的encoder和decoder部分其实都是叠加了6层，Nx=6，论文图中只用一层的结构来示意：<br><img src="/images/201907/transformer.jpg" alt="Transformer"><br>需要注意的是自注意力层中，序列中的词由于是挨个比较，相当于词袋模型，并没有语序的概念。为了加入语序，transformer在词嵌入进入自注意力层之前先加入了位置信息的嵌入，来标记语序。<br>位置信息的嵌入使用固定的正弦余弦函数来生成，目的是为了让经过一定长度之后，相对位置的标记相似。作者解释说同时也使用了训练的方式获得位置嵌入的信息，但发现两者差别不大，那么不如直接用公式来计算，更简便。<br>另外，自注意力模型由于用来替代RNN模型，因此也采用了RNN常用的layer normalization的方法，它在每次进入下一层网络之前先归一化处理。</p>
+<h2 id="一些资料和介绍"><a href="#一些资料和介绍" class="headerlink" title="一些资料和介绍"></a>一些资料和介绍</h2><p><a href="https://www.bilibili.com/video/av56239558" target="_blank" rel="noopener">台大李宏毅教授的Transformer视频</a><br><a href="http://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">Jalammar的Transformer可视化讲解博客</a><br><a href="https://colab.research.google.com/github/tensorflow/tensor2tensor/blob/master/tensor2tensor/notebooks/hello_t2t.ipynb" target="_blank" rel="noopener">官方Tensor2Tensor的Transformer使用</a></p>
 
       
     </div>
@@ -504,9 +505,9 @@
         
         <div class="post-tags">
           
-            <a href="/tags/无监督学习/" rel="tag"><i class="fa fa-tag"></i> 无监督学习</a>
+            <a href="/tags/Transformer/" rel="tag"><i class="fa fa-tag"></i> Transformer</a>
           
-            <a href="/tags/聚类/" rel="tag"><i class="fa fa-tag"></i> 聚类</a>
+            <a href="/tags/Seq2Seq/" rel="tag"><i class="fa fa-tag"></i> Seq2Seq</a>
           
         </div>
       
@@ -519,8 +520,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/20/xgboost/" rel="next" title="逐步理解XGBoost">
-                <i class="fa fa-chevron-left"></i> 逐步理解XGBoost
+              <a href="/2019/07/06/Adaboost/" rel="next" title="Adaboost小结">
+                <i class="fa fa-chevron-left"></i> Adaboost小结
               </a>
             
           </div>
@@ -528,10 +529,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/06/25/lda/" rel="prev" title="直观理解话题模型及应用">
-                直观理解话题模型及应用 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -745,7 +742,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#非监督学习"><span class="nav-number">1.</span> <span class="nav-text">非监督学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚类模型"><span class="nav-number">2.</span> <span class="nav-text">聚类模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#距离度量"><span class="nav-number">2.1.</span> <span class="nav-text">距离度量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k-means算法"><span class="nav-number">2.2.</span> <span class="nav-text">k-means算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">3.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#最大距离初始化"><span class="nav-number">3.1.</span> <span class="nav-text">最大距离初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K-means"><span class="nav-number">3.2.</span> <span class="nav-text">K-means++</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数选择"><span class="nav-number">4.</span> <span class="nav-text">参数选择</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#paper"><span class="nav-number">1.</span> <span class="nav-text">paper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型基础"><span class="nav-number">2.</span> <span class="nav-text">模型基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Self-Attention"><span class="nav-number">2.1.</span> <span class="nav-text">Self Attention</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi-head-Attention"><span class="nav-number">2.2.</span> <span class="nav-text">Multi-head Attention</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transformer"><span class="nav-number">3.</span> <span class="nav-text">Transformer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些资料和介绍"><span class="nav-number">4.</span> <span class="nav-text">一些资料和介绍</span></a></li></ol></div>
             
 
           </div>
