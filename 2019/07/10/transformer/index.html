@@ -114,7 +114,7 @@
 <meta property="og:image" content="https://yanfyang.github.io/images/201907/multical.JPG">
 <meta property="og:image" content="https://yanfyang.github.io/images/201907/multihead.jpg">
 <meta property="og:image" content="https://yanfyang.github.io/images/201907/transformer.jpg">
-<meta property="og:updated_time" content="2019-09-05T14:03:22.629Z">
+<meta property="og:updated_time" content="2019-09-05T14:08:03.445Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Transformer">
 <meta name="twitter:description" content="paper2014年seq2seq的encoder-decoder模型在翻译方面取得SOTA结果以后，Attention机制就被广泛关注。但大多是基于RNN等循环网络来做，Attention只是作为网络结构的巧妙设计出现。但是RNN循环神经网络的缺陷很明显，为了拿到上一个状态的结果，下一个状态只能等待，这样就只能一个step一个step来计算，不能并行化处理。于是，也有了CNN的发挥空间，CNN可">
@@ -467,9 +467,9 @@
 <li>计算所有词的加权和作为这一步的输出；</li>
 </ol>
 <p>最终就得到了Self Attention的输出序列，示意图如下，左图为seq2seq框架，中图为Attention计算和输出的具体步骤，出自台大李宏毅教授的课件。右图为有两个词序列的自注意力模型的计算具体过程，出自jalammar的可视化博客。</p>
-<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/201907/selfattentionseq2seq.jpg" title="Self Attention序列模型框架" width="225" height="400"></div>
-<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/201907/selfattention.jpg" title="Self Attention每个词的输出计算" width="225" height="400"></div>
-<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/201907/transcalvis.jpg" title="Self Attention计算可视化" width="220" height="300"></div>
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/201907/selfattentionseq2seq.jpg" title="Self Attention序列模型框架" width="230" height="400"></div>
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/201907/selfattention.jpg" title="Self Attention每个词的输出计算" width="230" height="400"></div>
+<div style="float:left;border:solid 1px 000;margin:2px;"><img src="/images/201907/transcalvis.jpg" title="Self Attention计算可视化" width="230" height="300"></div>
 <div style="clear:both;"></div>
 
 <h3 id="Multi-head-Attention"><a href="#Multi-head-Attention" class="headerlink" title="Multi-head Attention"></a>Multi-head Attention</h3><p>多头的注意力模型（忽略翻译的不规范哈），是多个Self Attention各自进行独立计算，然后将结果拼接起来，生成更大的矩阵。当然，如果觉得维度太高，还可以加一层全连接W进行降维。之后的输出就跟单个的Self Attention的过程一样了。<br>Multi-head Attention从注意力的可视化来看，不同的Attention负责抽取序列中不同的特征，比如有些偏重于局部信息，有些可以观察到全局的信息，最后将这些信息融合起来得到更综合的信息特征。<br>体会一下，有些类似于CNN中使用不同的kernel进行叠加抽取不同长度词语的信息，但是CNN中的kernel的大小需要手动设置，比如textCNN中作者用了3,4,5大小的kernel进行叠加，而这里Attention机制可以由模型自主学习，更自动化。<br>过程如下图，左边为模型中单个自注意力的计算，右图为模型中多个自注意力的拼接计算。</p>
