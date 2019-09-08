@@ -114,7 +114,7 @@
 <meta property="og:image" content="https://yanfyang.github.io/images/201907/multical.JPG">
 <meta property="og:image" content="https://yanfyang.github.io/images/201907/multihead.jpg">
 <meta property="og:image" content="https://yanfyang.github.io/images/201907/transformer.jpg">
-<meta property="og:updated_time" content="2019-09-05T14:09:48.087Z">
+<meta property="og:updated_time" content="2019-09-08T05:54:22.964Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Transformer">
 <meta name="twitter:description" content="paper2014年seq2seq的encoder-decoder模型在翻译方面取得SOTA结果以后，Attention机制就被广泛关注。但大多是基于RNN等循环网络来做，Attention只是作为网络结构的巧妙设计出现。但是RNN循环神经网络的缺陷很明显，为了拿到上一个状态的结果，下一个状态只能等待，这样就只能一个step一个step来计算，不能并行化处理。于是，也有了CNN的发挥空间，CNN可">
@@ -201,7 +201,7 @@
     </div>
     
       
-        <p class="site-subtitle">生活杂货铺</p>
+        <p class="site-subtitle">Focusing</p>
       
     
     
@@ -459,7 +459,7 @@
       
 
       
-        <h2 id="paper"><a href="#paper" class="headerlink" title="paper"></a>paper</h2><p>2014年seq2seq的encoder-decoder模型在翻译方面取得SOTA结果以后，Attention机制就被广泛关注。但大多是基于RNN等循环网络来做，Attention只是作为网络结构的巧妙设计出现。<br>但是RNN循环神经网络的缺陷很明显，为了拿到上一个状态的结果，下一个状态只能等待，这样就只能一个step一个step来计算，不能并行化处理。于是，也有了CNN的发挥空间，CNN可以抽取不同长度字词的信息，而且通过加深网络，理论上就能得到任意长度的信息，但是CNN也有一些问题，比如为了拿到长的记忆，网络就必须加深，浅层的网络仍然不能得到长时记忆。<br>2017年，Google的大神发了这篇论文，说原来Attention也可以脱离RNN独自使用，仅仅只用self attention就可以替代RNN、CNN的网络结构来提取信息！而且self attention的结构很简单，用矩阵并行计算的话也就只需要做一堆矩阵相乘就可以，Amazing…<br>论文传送：<a href="https://arxiv.org/pdf/1706.03762v5.pdf" target="_blank" rel="noopener">Attention is all you need | 2017</a></p>
+        <h2 id="paper"><a href="#paper" class="headerlink" title="paper"></a>paper</h2><p>2014年seq2seq的encoder-decoder模型在翻译方面取得SOTA结果以后，Attention机制就被广泛关注。但大多是基于RNN等循环网络来做，Attention只是作为网络结构的巧妙设计出现。<br>但是RNN循环神经网络的缺陷很明显，为了拿到上一个状态的结果，下一个状态只能等待，这样就只能一个step一个step来计算，不能并行化处理。于是，也有了CNN的发挥空间，CNN可以抽取不同长度字词的信息，而且通过加深网络，理论上就能得到任意长度的信息，但是CNN也有一些问题，比如为了拿到长的记忆，网络就必须加深，浅层的网络仍然不能得到长时记忆。<br>2017年，Google的大神发了这篇论文，说原来Attention也可以脱离RNN独自使用，仅仅只用self attention就可以替代RNN、CNN的网络结构来提取信息！而且self attention的结构很简单，用矩阵并行计算的话也就只需要做一堆矩阵相乘就可以，Amazing…<br>论文传送：<a href="https://arxiv.org/pdf/1706.03762v5.pdf" target="_blank" rel="noopener">Attention is all you need | NIPS 2017</a></p>
 <h2 id="模型基础"><a href="#模型基础" class="headerlink" title="模型基础"></a>模型基础</h2><h3 id="Self-Attention"><a href="#Self-Attention" class="headerlink" title="Self Attention"></a>Self Attention</h3><p>注意力机制是说我们在提取信息的时候一般不会大范围的对全貌平均用力，而是更可能会根据情景焦聚到某一点或者某一片范围内。<br>比如 The animal didn’t across the street, because it was too tried. 当翻译这句话的时候，对于it的翻译就会更希望获取animal的信息，而其他的信息可以弱化。<br>Attention机制就提供了这样的设计，它对于输入会拆分成三部分: query，key和value。<br>Self Attention 的序列到序列模型建立需要做如下步骤，对于序列中的每项输入，也就是每个词：</p>
 <ol>
 <li>拿这个词的query去和其他词的key进行点乘，得到相似度权重；</li>
@@ -478,7 +478,7 @@
 <div style="clear:both;"></div>
 
 <h2 id="Transformer"><a href="#Transformer" class="headerlink" title="Transformer"></a>Transformer</h2><p>有了多头注意力基础模型，把它加深几层，然后组织到encoder - decoder 的框架中，就变成了Transformer。<br>如下为transformer的结构图，图中灰色的encoder和decoder部分其实都是叠加了6层，Nx=6，论文图中只用一层的结构来示意：<br><img src="/images/201907/transformer.jpg" alt="Transformer"><br>需要注意的是自注意力层中，序列中的词由于是挨个比较，相当于词袋模型，并没有语序的概念。为了加入语序，transformer在词嵌入进入自注意力层之前先加入了位置信息的嵌入，来标记语序。<br>位置信息的嵌入使用固定的正弦余弦函数来生成，目的是为了让经过一定长度之后，相对位置的标记相似。作者解释说同时也使用了训练的方式获得位置嵌入的信息，但发现两者差别不大，那么不如直接用公式来计算，更简便。<br>另外，自注意力模型由于用来替代RNN模型，因此也采用了RNN常用的layer normalization的方法，它在每次进入下一层网络之前先归一化处理。</p>
-<h2 id="一些资料和介绍"><a href="#一些资料和介绍" class="headerlink" title="一些资料和介绍"></a>一些资料和介绍</h2><p><a href="https://www.bilibili.com/video/av56239558" target="_blank" rel="noopener">台大李宏毅教授的Transformer视频</a><br><a href="http://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">Jalammar的Transformer可视化讲解博客</a><br><a href="https://colab.research.google.com/github/tensorflow/tensor2tensor/blob/master/tensor2tensor/notebooks/hello_t2t.ipynb" target="_blank" rel="noopener">官方Tensor2Tensor的Transformer使用</a></p>
+<h2 id="一些资料和介绍"><a href="#一些资料和介绍" class="headerlink" title="一些资料和介绍"></a>一些资料和介绍</h2><p><a href="https://www.bilibili.com/video/av56239558" target="_blank" rel="noopener">台大李宏毅教授的Transformer视频</a><br><a href="http://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">Jalammar的Transformer可视化讲解博客</a><br><a href="https://colab.research.google.com/github/tensorflow/tensor2tensor/blob/master/tensor2tensor/notebooks/hello_t2t.ipynb" target="_blank" rel="noopener">官方Tensor2Tensor的Transformer使用</a><br><a href="http://nlp.seas.harvard.edu/2018/04/03/attention.html" target="_blank" rel="noopener">Attention pytorch 实践</a></p>
 
       
     </div>
@@ -529,6 +529,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/14/fasttext/" rel="prev" title="文本分类之fastText">
+                文本分类之fastText <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -603,7 +607,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -689,7 +693,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">20</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">22</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1005,6 +1013,16 @@
   
 
   
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
 
   
 

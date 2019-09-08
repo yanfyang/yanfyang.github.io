@@ -100,18 +100,16 @@
 
 
 
-  <meta name="description" content="规则匹配前向最大匹配前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。比如，我们有一个句子： 小明希望长大以后成为警察。我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}如果滑动窗口为5，那么我们会这样匹配  在第一个滑动窗口中，我们要切分的是  小明希望长   小明希望长  —》 不构成词语 小明希望    --》">
-<meta name="keywords" content="NLP分词">
-<meta property="og:type" content="article">
-<meta property="og:title" content="分词匹配算法">
-<meta property="og:url" content="https://yanfyang.github.io/2019/07/02/segmentation/index.html">
+  <meta name="description" content="保持好奇，探索有趣。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fein Yang&#39;s Blog">
+<meta property="og:url" content="https://yanfyang.github.io/page/2/index.html">
 <meta property="og:site_name" content="Fein Yang&#39;s Blog">
-<meta property="og:description" content="规则匹配前向最大匹配前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。比如，我们有一个句子： 小明希望长大以后成为警察。我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}如果滑动窗口为5，那么我们会这样匹配  在第一个滑动窗口中，我们要切分的是  小明希望长   小明希望长  —》 不构成词语 小明希望    --》">
+<meta property="og:description" content="保持好奇，探索有趣。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-19T09:34:25.069Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="分词匹配算法">
-<meta name="twitter:description" content="规则匹配前向最大匹配前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。比如，我们有一个句子： 小明希望长大以后成为警察。我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}如果滑动窗口为5，那么我们会这样匹配  在第一个滑动窗口中，我们要切分的是  小明希望长   小明希望长  —》 不构成词语 小明希望    --》">
+<meta name="twitter:title" content="Fein Yang&#39;s Blog">
+<meta name="twitter:description" content="保持好奇，探索有趣。">
 
 
 
@@ -119,7 +117,7 @@
 
   
   
-  <link rel="canonical" href="https://yanfyang.github.io/2019/07/02/segmentation/">
+  <link rel="canonical" href="https://yanfyang.github.io/page/2/">
 
 
 
@@ -129,7 +127,7 @@
   };
 </script>
 
-  <title>分词匹配算法 | Fein Yang's Blog</title>
+  <title>Fein Yang's Blog</title>
   
 
 
@@ -177,7 +175,8 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left 
+  page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -315,9 +314,9 @@
           
           <div id="content" class="content">
             
-
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-expand">
     
+      
 
   
 
@@ -332,7 +331,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/07/02/segmentation/">
+    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/06/12/first/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Fein">
@@ -349,8 +348,10 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">分词匹配算法
-
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/06/12/first/" class="post-title-link" itemprop="url">开篇</a>
               
             
           </h1>
@@ -375,7 +376,7 @@
                 
               
 
-              <time title="创建时间：2019-07-02 00:00:00" itemprop="dateCreated datePublished" datetime="2019-07-02T00:00:00+08:00">2019-07-02</time>
+              <time title="创建时间：2019-06-12 00:00:00" itemprop="dateCreated datePublished" datetime="2019-06-12T00:00:00+08:00">2019-06-12</time>
             
 
             
@@ -393,7 +394,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/小想法/" itemprop="url" rel="index"><span itemprop="name">小想法</span></a></span>
 
                 
                 
@@ -404,24 +405,11 @@
           
             
             
-              
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/07/02/segmentation/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/02/segmentation/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
           
-            <span id="/2019/07/02/segmentation/" class="leancloud_visitors" data-flag-title="分词匹配算法">
+            <span id="/2019/06/12/first/" class="leancloud_visitors" data-flag-title="开篇">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -452,41 +440,24 @@
       
 
       
-        <h2 id="规则匹配"><a href="#规则匹配" class="headerlink" title="规则匹配"></a>规则匹配</h2><h3 id="前向最大匹配"><a href="#前向最大匹配" class="headerlink" title="前向最大匹配"></a>前向最大匹配</h3><p>前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。<br>比如，我们有一个句子： 小明希望长大以后成为警察。<br>我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}<br>如果滑动窗口为5，那么我们会这样匹配</p>
-<ol>
-<li><p>在第一个滑动窗口中，我们要切分的是  小明希望长 </p>
-<p> 小明希望长  —》 不构成词语</p>
-<pre><code>小明希望    --》 不构成词语
-小明希      --》 不构成词语
-小明        --》 构成词语，从这里切分开
-</code></pre></li>
-<li><p>进入第二个滑动窗口，要切分的是  希望长大以</p>
-<p> 希望长大以  —》 不构成<br> 希望长大    —》 不构成<br> 希望长      —》 不构成<br> 希望        —》 构成， 从这里切分开</p>
-</li>
-<li><p>继续进入第三个滑动窗口，依次类推。</p>
-</li>
-</ol>
-<h3 id="后向最大匹配"><a href="#后向最大匹配" class="headerlink" title="后向最大匹配"></a>后向最大匹配</h3><p>后向最大匹配是说，在滑动窗口区域内，从开头处以次减词，来查看后面的部分是否可以构成词语，如果是，则切分开。<br>同样上面的例子，我们开始是从  后成为警察 来进行第一次匹配</p>
-<ol>
-<li>第一次，我们要匹配切分的是   后成为警察<br> 后成为警察  —》 不构成词语<br> 成为警察    —》 不构成词语<br> 为警察      —》 不构成词语<br> 警察        —》 构成词语，从这里切分开</li>
-<li>第二次，我们要匹配切分的是  大以后成为<br> 大以后成为  —》 不构成词语<br> 以后成为    —》 不构成词语<br> 后成为      —》 不构成词语<br> 成为        —》 构成词语，从这里切分开</li>
-<li>第三次，我们继续匹配剩余的  望长大以后， 以此类推…</li>
-</ol>
-<h2 id="基于统计概率方法"><a href="#基于统计概率方法" class="headerlink" title="基于统计概率方法"></a>基于统计概率方法</h2><p>为什么要提出基于词频的模型呢？ 由上面的模型可以看出，两个模型由于固定的窗口长度和匹配方向的原因，会出现分词的偏差。<br>比如 南京市长江大桥，如果词典里的词有 ‘南京、南京市、市长、长江、大桥’，<br>那么用前向匹配5个固定窗口的来切分，会被切分为 ‘ 南京 | 市长 | 江 | 大桥 ’；同样，用后向匹配5个固定窗口的来切分，则会被切分为 ‘ 南京市 | 长江 | 大桥 ’。 那么如何判定哪种分词方法更好呢？ 这显然是有问题的，于是基于概率统计的方法引入概率模型，模型不仅需要考虑词语本身，还同时考虑词语出现的概率（频次/频率）。</p>
-<h3 id="Unigram-LM-模型"><a href="#Unigram-LM-模型" class="headerlink" title="Unigram LM 模型"></a>Unigram LM 模型</h3><p><em>前提假设：朴素贝叶斯，即所有词语相互独立，联合概率可用各个词语概率乘积进行计算。</em><br>套用贝叶斯公式，将每个分词方案i作为预测的Y，将被分词的句子作为X，则可以表示为：</p>
-<script type="math/tex; mode=display">
-P\left(Y_{i} | X\right) = P\left(X | Y_{i}\right) P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>因为在分词的场景下，我们无论采用哪种分词方法得到的句子X都是相同的，因此可将$P\left(X | Y_{i}\right)$看作1，式子简化为：</p>
-<script type="math/tex; mode=display">
-P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样，我们只需要取最大的$P\left(Y_{i}\right)$来进行分词就可以了，那么这个概率如何计算呢？<br>基于朴素贝叶斯的假设，我们可以认为各个词之间相互独立，$P\left(Y_{i}\right)$方案的概率就可以表示为分词方案中每个分词出现概率的乘积。<br>整个流程如下：</p>
-<blockquote>
-<p>a. 由语料库统计出词语的出现概率，构建词典存储起来；<br>b. 根据词语组合遍历出句子所有可能的分词方案；<br>c. 根据各个词语的频率计算分词方案的联合概率，得出分词方案的可能性；<br>d. 对比选出可能性最大的分词方案作为最后结果。</p>
-<ol>
-<li>计算量的优化：利用图模型，采用维特比算法，思想是每走一步都取最优。</li>
-<li>模型的问题：基于朴素贝叶斯，各个词语相互独立，未考虑到语序信息。</li>
-</ol>
-</blockquote>
-<h3 id="N-gram-模型"><a href="#N-gram-模型" class="headerlink" title="N-gram 模型"></a>N-gram 模型</h3><p>为了解决语序信息缺失的问题，可以用N-gram模型。<br>N-gram是说我们会假设一个词会跟前面的N个词有关，也就是马尔科夫假设。那么$P\left(Y_{i}\right)$的概率计算还需要引入条件概率进行建模。<br>以bi-gram为例，假设每个词语只跟上一个词语有关，方案$P\left(Y_{i}\right)$的概率变为下面的式子，其中xj为一个分词词语。</p>
-<script type="math/tex; mode=display">P(Y_{i}) = P(x_{1}) * P(x_{2}|x_{1}) * P(x_{3}|x_{2}) * P(x_{j-1}|x_{j}) * ... * P(x_{J}|x_{J-1})</script>
+        
+          
+            <p>
+              近期准备整理一下之前看的一些机器学习的理论，想着写笔记记录下吧，于是了解一些hexo的介绍，开始参考网上的资料搭建环境。 
+打算写些什么博客打算主要写读书学习笔记，也会写一些小的思考，如果发现有好玩的东西也会做个分享。之前记笔记总是想尽可能的分到小类，导致笔记内容太分散。所以，这里的笔记不打算再细细分类，只按大类别分开，然后一篇笔记从初版开始，可能先记录一些框架和概念，之后随着思考再在原来基础上进行更新，慢慢将笔记整理成知识精华。 
+踩坑记录网上的建站博客非常多，建议工具安装先参考官网，如果有不
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/06/12/first/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
       
     </div>
 
@@ -507,43 +478,14 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
 
     <footer class="post-footer">
       
-        
-          
-        
-        <div class="post-tags">
-          
-            <a href="/tags/NLP分词/" rel="tag"><i class="fa fa-tag"></i> NLP分词</a>
-          
-        </div>
+
+      
+
       
 
       
       
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/06/25/lda/" rel="next" title="直观理解话题模型及应用">
-                <i class="fa fa-chevron-left"></i> 直观理解话题模型及应用
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/07/03/word2vec/" rel="prev" title="从Word2Vec到Doc2Vec">
-                从Word2Vec到Doc2Vec <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -553,19 +495,18 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
   </article>
 
 
-  </div>
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
 
 
           </div>
           
-
-  
-    <div class="comments" id="comments">
-    </div>
-
-  
-
-
 
         </div>
         
@@ -585,17 +526,8 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <div class="site-overview-wrap sidebar-panel">
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -745,23 +677,6 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
       </div>
 
       
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#规则匹配"><span class="nav-number">1.</span> <span class="nav-text">规则匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前向最大匹配"><span class="nav-number">1.1.</span> <span class="nav-text">前向最大匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后向最大匹配"><span class="nav-number">1.2.</span> <span class="nav-text">后向最大匹配</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于统计概率方法"><span class="nav-number">2.</span> <span class="nav-text">基于统计概率方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Unigram-LM-模型"><span class="nav-number">2.1.</span> <span class="nav-text">Unigram LM 模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#N-gram-模型"><span class="nav-number">2.2.</span> <span class="nav-text">N-gram 模型</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
-      
 
       
 
@@ -902,10 +817,6 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
 
 
   
-  <script src="/js/scrollspy.js?v=7.1.2"></script>
-<script src="/js/post-details.js?v=7.1.2"></script>
-
-
 
   
 
@@ -952,8 +863,6 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
 
 
 
-  
-
 
   
 
@@ -968,6 +877,10 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
   
 
   
+  
+    
+      
+    
   
 
   

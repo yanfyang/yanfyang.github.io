@@ -100,18 +100,21 @@
 
 
 
-  <meta name="description" content="规则匹配前向最大匹配前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。比如，我们有一个句子： 小明希望长大以后成为警察。我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}如果滑动窗口为5，那么我们会这样匹配  在第一个滑动窗口中，我们要切分的是  小明希望长   小明希望长  —》 不构成词语 小明希望    --》">
-<meta name="keywords" content="NLP分词">
+  <meta name="description" content="paperWord2Vec出现以后，深度学习在自然语言处理任务上的研究和发展再次火热起来。但是深度学习有个很大的障碍，就是参数多，计算量大，对GPU资源的依赖比较大，一般CPU大概率是跑不动深层神经网络模型的。不仅如此，即使使用了GPU，训练和测试的时间也很长，这对于一些基础的NLP任务(比如文本分类、情感分析这些简单的分类模型)来说，就有些不尽人意了。fastText针对文本分类的任务提出了更快">
+<meta name="keywords" content="文本分类,fastText">
 <meta property="og:type" content="article">
-<meta property="og:title" content="分词匹配算法">
-<meta property="og:url" content="https://yanfyang.github.io/2019/07/02/segmentation/index.html">
+<meta property="og:title" content="文本分类之fastText">
+<meta property="og:url" content="https://yanfyang.github.io/2019/07/14/fasttext/index.html">
 <meta property="og:site_name" content="Fein Yang&#39;s Blog">
-<meta property="og:description" content="规则匹配前向最大匹配前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。比如，我们有一个句子： 小明希望长大以后成为警察。我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}如果滑动窗口为5，那么我们会这样匹配  在第一个滑动窗口中，我们要切分的是  小明希望长   小明希望长  —》 不构成词语 小明希望    --》">
+<meta property="og:description" content="paperWord2Vec出现以后，深度学习在自然语言处理任务上的研究和发展再次火热起来。但是深度学习有个很大的障碍，就是参数多，计算量大，对GPU资源的依赖比较大，一般CPU大概率是跑不动深层神经网络模型的。不仅如此，即使使用了GPU，训练和测试的时间也很长，这对于一些基础的NLP任务(比如文本分类、情感分析这些简单的分类模型)来说，就有些不尽人意了。fastText针对文本分类的任务提出了更快">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-19T09:34:25.069Z">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/fasttext.jpg">
+<meta property="og:image" content="https://yanfyang.github.io/images/201907/fasttextngram.jpg">
+<meta property="og:updated_time" content="2019-09-08T11:17:08.058Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="分词匹配算法">
-<meta name="twitter:description" content="规则匹配前向最大匹配前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。比如，我们有一个句子： 小明希望长大以后成为警察。我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}如果滑动窗口为5，那么我们会这样匹配  在第一个滑动窗口中，我们要切分的是  小明希望长   小明希望长  —》 不构成词语 小明希望    --》">
+<meta name="twitter:title" content="文本分类之fastText">
+<meta name="twitter:description" content="paperWord2Vec出现以后，深度学习在自然语言处理任务上的研究和发展再次火热起来。但是深度学习有个很大的障碍，就是参数多，计算量大，对GPU资源的依赖比较大，一般CPU大概率是跑不动深层神经网络模型的。不仅如此，即使使用了GPU，训练和测试的时间也很长，这对于一些基础的NLP任务(比如文本分类、情感分析这些简单的分类模型)来说，就有些不尽人意了。fastText针对文本分类的任务提出了更快">
+<meta name="twitter:image" content="https://yanfyang.github.io/images/201907/fasttext.jpg">
 
 
 
@@ -119,7 +122,7 @@
 
   
   
-  <link rel="canonical" href="https://yanfyang.github.io/2019/07/02/segmentation/">
+  <link rel="canonical" href="https://yanfyang.github.io/2019/07/14/fasttext/">
 
 
 
@@ -129,7 +132,7 @@
   };
 </script>
 
-  <title>分词匹配算法 | Fein Yang's Blog</title>
+  <title>文本分类之fastText | Fein Yang's Blog</title>
   
 
 
@@ -332,7 +335,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/07/02/segmentation/">
+    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/07/14/fasttext/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Fein">
@@ -349,7 +352,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">分词匹配算法
+          <h1 class="post-title" itemprop="name headline">文本分类之fastText
 
               
             
@@ -375,7 +378,7 @@
                 
               
 
-              <time title="创建时间：2019-07-02 00:00:00" itemprop="dateCreated datePublished" datetime="2019-07-02T00:00:00+08:00">2019-07-02</time>
+              <time title="创建时间：2019-07-14 22:05:13" itemprop="dateCreated datePublished" datetime="2019-07-14T22:05:13+08:00">2019-07-14</time>
             
 
             
@@ -393,7 +396,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/读paper/" itemprop="url" rel="index"><span itemprop="name">读paper</span></a></span>
 
                 
                 
@@ -412,8 +415,8 @@
                 </span>
             
                 <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/07/02/segmentation/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/02/segmentation/" itemprop="commentCount"></span>
+                <a href="/2019/07/14/fasttext/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/14/fasttext/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -421,7 +424,7 @@
 
           
           
-            <span id="/2019/07/02/segmentation/" class="leancloud_visitors" data-flag-title="分词匹配算法">
+            <span id="/2019/07/14/fasttext/" class="leancloud_visitors" data-flag-title="文本分类之fastText">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -452,41 +455,13 @@
       
 
       
-        <h2 id="规则匹配"><a href="#规则匹配" class="headerlink" title="规则匹配"></a>规则匹配</h2><h3 id="前向最大匹配"><a href="#前向最大匹配" class="headerlink" title="前向最大匹配"></a>前向最大匹配</h3><p>前向最大匹配是说在滑动窗口区域内，从结尾处依次减词，来查看前面的部分是否可以构成词语，如果是，则切分开。<br>比如，我们有一个句子： 小明希望长大以后成为警察。<br>我们有一个词典，里面已经定义好的词语 {小明，希望，长大，以后，成为，警察}<br>如果滑动窗口为5，那么我们会这样匹配</p>
-<ol>
-<li><p>在第一个滑动窗口中，我们要切分的是  小明希望长 </p>
-<p> 小明希望长  —》 不构成词语</p>
-<pre><code>小明希望    --》 不构成词语
-小明希      --》 不构成词语
-小明        --》 构成词语，从这里切分开
-</code></pre></li>
-<li><p>进入第二个滑动窗口，要切分的是  希望长大以</p>
-<p> 希望长大以  —》 不构成<br> 希望长大    —》 不构成<br> 希望长      —》 不构成<br> 希望        —》 构成， 从这里切分开</p>
-</li>
-<li><p>继续进入第三个滑动窗口，依次类推。</p>
-</li>
-</ol>
-<h3 id="后向最大匹配"><a href="#后向最大匹配" class="headerlink" title="后向最大匹配"></a>后向最大匹配</h3><p>后向最大匹配是说，在滑动窗口区域内，从开头处以次减词，来查看后面的部分是否可以构成词语，如果是，则切分开。<br>同样上面的例子，我们开始是从  后成为警察 来进行第一次匹配</p>
-<ol>
-<li>第一次，我们要匹配切分的是   后成为警察<br> 后成为警察  —》 不构成词语<br> 成为警察    —》 不构成词语<br> 为警察      —》 不构成词语<br> 警察        —》 构成词语，从这里切分开</li>
-<li>第二次，我们要匹配切分的是  大以后成为<br> 大以后成为  —》 不构成词语<br> 以后成为    —》 不构成词语<br> 后成为      —》 不构成词语<br> 成为        —》 构成词语，从这里切分开</li>
-<li>第三次，我们继续匹配剩余的  望长大以后， 以此类推…</li>
-</ol>
-<h2 id="基于统计概率方法"><a href="#基于统计概率方法" class="headerlink" title="基于统计概率方法"></a>基于统计概率方法</h2><p>为什么要提出基于词频的模型呢？ 由上面的模型可以看出，两个模型由于固定的窗口长度和匹配方向的原因，会出现分词的偏差。<br>比如 南京市长江大桥，如果词典里的词有 ‘南京、南京市、市长、长江、大桥’，<br>那么用前向匹配5个固定窗口的来切分，会被切分为 ‘ 南京 | 市长 | 江 | 大桥 ’；同样，用后向匹配5个固定窗口的来切分，则会被切分为 ‘ 南京市 | 长江 | 大桥 ’。 那么如何判定哪种分词方法更好呢？ 这显然是有问题的，于是基于概率统计的方法引入概率模型，模型不仅需要考虑词语本身，还同时考虑词语出现的概率（频次/频率）。</p>
-<h3 id="Unigram-LM-模型"><a href="#Unigram-LM-模型" class="headerlink" title="Unigram LM 模型"></a>Unigram LM 模型</h3><p><em>前提假设：朴素贝叶斯，即所有词语相互独立，联合概率可用各个词语概率乘积进行计算。</em><br>套用贝叶斯公式，将每个分词方案i作为预测的Y，将被分词的句子作为X，则可以表示为：</p>
+        <h2 id="paper"><a href="#paper" class="headerlink" title="paper"></a>paper</h2><p>Word2Vec出现以后，深度学习在自然语言处理任务上的研究和发展再次火热起来。但是深度学习有个很大的障碍，就是参数多，计算量大，对GPU资源的依赖比较大，一般CPU大概率是跑不动深层神经网络模型的。不仅如此，即使使用了GPU，训练和测试的时间也很长，这对于一些基础的NLP任务(比如文本分类、情感分析这些简单的分类模型)来说，就有些不尽人意了。<br>fastText针对文本分类的任务提出了更快速更简单的模型，能够在保证准确度的基础上，速度有成千倍的提升！比如论文中的对比试验，之前采用别的模型需要近1h的训练，使用fastText只用1s就搞定。十亿单词的文本，仅仅使用标准的多核CPU，10分钟就可以训练完成。<br>论文传送：<br><a href="https://arxiv.org/pdf/1607.01759.pdf" target="_blank" rel="noopener">Bag of Tricks for Efficient Text Classification | cs.CL 2016</a><br><a href="https://arxiv.org/pdf/1607.04606.pdf" target="_blank" rel="noopener">Enriching Word Vectors with Subword Information | cs.CL 2017</a></p>
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>fastText的结构非常简单，对于分类模型它简化了中间层的处理，直接使用特征词的均值向量来做为句子的表达，然后经过softmax来得到输出的各label概率。也正是这样，大大简化了计算量，使得模型能够快速训练完成。模型架构如下图：<br><img src="/images/201907/fasttext.jpg" alt="fastText架构图"><br>图中的x是已经经过预处理的n-gram的词特征，对于N个样本来说，损失函数可表示为各类别负对数损失的和，其中，A为词嵌入矩阵，B为文本向量维度到输出维度的参数矩阵。</p>
 <script type="math/tex; mode=display">
-P\left(Y_{i} | X\right) = P\left(X | Y_{i}\right) P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>因为在分词的场景下，我们无论采用哪种分词方法得到的句子X都是相同的，因此可将$P\left(X | Y_{i}\right)$看作1，式子简化为：</p>
-<script type="math/tex; mode=display">
-P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样，我们只需要取最大的$P\left(Y_{i}\right)$来进行分词就可以了，那么这个概率如何计算呢？<br>基于朴素贝叶斯的假设，我们可以认为各个词之间相互独立，$P\left(Y_{i}\right)$方案的概率就可以表示为分词方案中每个分词出现概率的乘积。<br>整个流程如下：</p>
-<blockquote>
-<p>a. 由语料库统计出词语的出现概率，构建词典存储起来；<br>b. 根据词语组合遍历出句子所有可能的分词方案；<br>c. 根据各个词语的频率计算分词方案的联合概率，得出分词方案的可能性；<br>d. 对比选出可能性最大的分词方案作为最后结果。</p>
-<ol>
-<li>计算量的优化：利用图模型，采用维特比算法，思想是每走一步都取最优。</li>
-<li>模型的问题：基于朴素贝叶斯，各个词语相互独立，未考虑到语序信息。</li>
-</ol>
-</blockquote>
-<h3 id="N-gram-模型"><a href="#N-gram-模型" class="headerlink" title="N-gram 模型"></a>N-gram 模型</h3><p>为了解决语序信息缺失的问题，可以用N-gram模型。<br>N-gram是说我们会假设一个词会跟前面的N个词有关，也就是马尔科夫假设。那么$P\left(Y_{i}\right)$的概率计算还需要引入条件概率进行建模。<br>以bi-gram为例，假设每个词语只跟上一个词语有关，方案$P\left(Y_{i}\right)$的概率变为下面的式子，其中xj为一个分词词语。</p>
-<script type="math/tex; mode=display">P(Y_{i}) = P(x_{1}) * P(x_{2}|x_{1}) * P(x_{3}|x_{2}) * P(x_{j-1}|x_{j}) * ... * P(x_{J}|x_{J-1})</script>
+L = -\frac{1}{N} \sum_{n=1}^{N} y_{n} \log \left(f\left(B A x_{n}\right)\right)</script><h2 id="问题和优化"><a href="#问题和优化" class="headerlink" title="问题和优化"></a>问题和优化</h2><h3 id="层次softmax"><a href="#层次softmax" class="headerlink" title="层次softmax"></a>层次softmax</h3><p>同Word2Vec一样，文本表达经过softmax之后也面临着类别维度巨大的问题，正常的线性计算复杂度也需要O(kh),k为类别数量，h为文本向量维度。在词嵌入方法中提出了两种优化方法，层次softmax和负采样，论文用了层次softmax的方法。<br>作者提出用这种方法可以方便地计算概率值比较小的结点来进行剪枝，同时由于结点上的概率总是父结点比子结点要大，如果要求label最相似的结点，也可以根据最大堆快速得出。</p>
+<h3 id="n-gram-特征提取"><a href="#n-gram-特征提取" class="headerlink" title="n-gram 特征提取"></a>n-gram 特征提取</h3><p>根据模型架构，如果直接将词嵌入向量求均值，然后softmax计算输出概率也是可行的，但是这种unigram的方法相当于词袋模型，并没有考虑到语序的影响。<br>为了提取文本的语序信息，论文提出添加文本的n-gram特征进行优化。<br>如下图显示，在话题预测的任务中，添加n-gram特征以后的模型效果会大大提升。<br><img src="/images/201907/fasttextngram.jpg" alt="n-gram实验效果"></p>
+<h3 id="未登陆词的识别"><a href="#未登陆词的识别" class="headerlink" title="未登陆词的识别"></a>未登陆词的识别</h3><p>通常不论训练集的语料有多大，在实际应用的过程中，总会遇到一些稀少的未登录词。这些词有时会统一处理成UNK来同等对待，但是总归还是丧失了未登陆词的语义。<br>fastText的优化基于n-gram提出了解决未登陆词的新思路。它会在训练的过程中同时训练子词。<br>举个例子，单词 subject 一般训练的时候会把它作为整体的词来进行训练。但是基于2-gram的子词来分，就可以拆分为 su ub bj je ec ct 这样一系列的词，在训练过程中同时得到子词的向量表示。<br>如果遇到了新词就可以将共同的子词表示组合起来形成更好的新词表达。</p>
+
       
     </div>
 
@@ -512,7 +487,9 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
         
         <div class="post-tags">
           
-            <a href="/tags/NLP分词/" rel="tag"><i class="fa fa-tag"></i> NLP分词</a>
+            <a href="/tags/文本分类/" rel="tag"><i class="fa fa-tag"></i> 文本分类</a>
+          
+            <a href="/tags/fastText/" rel="tag"><i class="fa fa-tag"></i> fastText</a>
           
         </div>
       
@@ -525,8 +502,8 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/25/lda/" rel="next" title="直观理解话题模型及应用">
-                <i class="fa fa-chevron-left"></i> 直观理解话题模型及应用
+              <a href="/2019/07/10/transformer/" rel="next" title="Transformer">
+                <i class="fa fa-chevron-left"></i> Transformer
               </a>
             
           </div>
@@ -534,10 +511,6 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/07/03/word2vec/" rel="prev" title="从Word2Vec到Doc2Vec">
-                从Word2Vec到Doc2Vec <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -755,7 +728,7 @@ P\left(Y_{i} | X\right) = P\left(Y_{i}\right) ; i=1,2,3 \dots</script><p>这样�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#规则匹配"><span class="nav-number">1.</span> <span class="nav-text">规则匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前向最大匹配"><span class="nav-number">1.1.</span> <span class="nav-text">前向最大匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后向最大匹配"><span class="nav-number">1.2.</span> <span class="nav-text">后向最大匹配</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于统计概率方法"><span class="nav-number">2.</span> <span class="nav-text">基于统计概率方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Unigram-LM-模型"><span class="nav-number">2.1.</span> <span class="nav-text">Unigram LM 模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#N-gram-模型"><span class="nav-number">2.2.</span> <span class="nav-text">N-gram 模型</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#paper"><span class="nav-number">1.</span> <span class="nav-text">paper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型"><span class="nav-number">2.</span> <span class="nav-text">模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题和优化"><span class="nav-number">3.</span> <span class="nav-text">问题和优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#层次softmax"><span class="nav-number">3.1.</span> <span class="nav-text">层次softmax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#n-gram-特征提取"><span class="nav-number">3.2.</span> <span class="nav-text">n-gram 特征提取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#未登陆词的识别"><span class="nav-number">3.3.</span> <span class="nav-text">未登陆词的识别</span></a></li></ol></li></ol></div>
             
 
           </div>
