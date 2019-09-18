@@ -100,21 +100,20 @@
 
 
 
-  <meta name="description" content="paperWord2Vec出现以后，深度学习在自然语言处理任务上的研究和发展再次火热起来。但是深度学习有个很大的障碍，就是参数多，计算量大，对GPU资源的依赖比较大，一般CPU大概率是跑不动深层神经网络模型的。不仅如此，即使使用了GPU，训练和测试的时间也很长，这对于一些基础的NLP任务(比如文本分类、情感分析这些简单的分类模型)来说，就有些不尽人意了。fastText针对文本分类的任务提出了更快">
-<meta name="keywords" content="文本分类,fastText">
+  <meta name="description" content="EM算法简述EM算法是对含有隐状态的参数估计问题的解法，目标是极大化可观测数据的对数似然概率。比如，HMM的模型参数学习问题，如果只给了观测序列，而隐状态也未知的情况下，想要构建模型就需要EM算法。事实上，EM算法分为两步，一个是E步，即Expectatiion，求隐状态的期望；一个是M步，即maximization，在隐状态期望已知的情况下再对极大似然函数求解，得到参数θ。然后继续迭代，一步步得">
+<meta name="keywords" content="HMM,EM,序列模型">
 <meta property="og:type" content="article">
-<meta property="og:title" content="文本分类之fastText">
-<meta property="og:url" content="https://yanfyang.github.io/2019/07/14/fasttext/index.html">
+<meta property="og:title" content="EM算法都在算些什么（推导理解）">
+<meta property="og:url" content="https://yanfyang.github.io/2019/06/24/EM/index.html">
 <meta property="og:site_name" content="Fein Yang&#39;s Blog">
-<meta property="og:description" content="paperWord2Vec出现以后，深度学习在自然语言处理任务上的研究和发展再次火热起来。但是深度学习有个很大的障碍，就是参数多，计算量大，对GPU资源的依赖比较大，一般CPU大概率是跑不动深层神经网络模型的。不仅如此，即使使用了GPU，训练和测试的时间也很长，这对于一些基础的NLP任务(比如文本分类、情感分析这些简单的分类模型)来说，就有些不尽人意了。fastText针对文本分类的任务提出了更快">
+<meta property="og:description" content="EM算法简述EM算法是对含有隐状态的参数估计问题的解法，目标是极大化可观测数据的对数似然概率。比如，HMM的模型参数学习问题，如果只给了观测序列，而隐状态也未知的情况下，想要构建模型就需要EM算法。事实上，EM算法分为两步，一个是E步，即Expectatiion，求隐状态的期望；一个是M步，即maximization，在隐状态期望已知的情况下再对极大似然函数求解，得到参数θ。然后继续迭代，一步步得">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://yanfyang.github.io/images/201907/fasttext.jpg">
-<meta property="og:image" content="https://yanfyang.github.io/images/201907/fasttextngram.jpg">
-<meta property="og:updated_time" content="2019-09-08T11:17:08.058Z">
+<meta property="og:image" content="https://yanfyang.github.io/images/201906/EM.jpg">
+<meta property="og:updated_time" content="2019-09-18T02:50:26.855Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="文本分类之fastText">
-<meta name="twitter:description" content="paperWord2Vec出现以后，深度学习在自然语言处理任务上的研究和发展再次火热起来。但是深度学习有个很大的障碍，就是参数多，计算量大，对GPU资源的依赖比较大，一般CPU大概率是跑不动深层神经网络模型的。不仅如此，即使使用了GPU，训练和测试的时间也很长，这对于一些基础的NLP任务(比如文本分类、情感分析这些简单的分类模型)来说，就有些不尽人意了。fastText针对文本分类的任务提出了更快">
-<meta name="twitter:image" content="https://yanfyang.github.io/images/201907/fasttext.jpg">
+<meta name="twitter:title" content="EM算法都在算些什么（推导理解）">
+<meta name="twitter:description" content="EM算法简述EM算法是对含有隐状态的参数估计问题的解法，目标是极大化可观测数据的对数似然概率。比如，HMM的模型参数学习问题，如果只给了观测序列，而隐状态也未知的情况下，想要构建模型就需要EM算法。事实上，EM算法分为两步，一个是E步，即Expectatiion，求隐状态的期望；一个是M步，即maximization，在隐状态期望已知的情况下再对极大似然函数求解，得到参数θ。然后继续迭代，一步步得">
+<meta name="twitter:image" content="https://yanfyang.github.io/images/201906/EM.jpg">
 
 
 
@@ -122,7 +121,7 @@
 
   
   
-  <link rel="canonical" href="https://yanfyang.github.io/2019/07/14/fasttext/">
+  <link rel="canonical" href="https://yanfyang.github.io/2019/06/24/EM/">
 
 
 
@@ -132,7 +131,7 @@
   };
 </script>
 
-  <title>文本分类之fastText | Fein Yang's Blog</title>
+  <title>EM算法都在算些什么（推导理解） | Fein Yang's Blog</title>
   
 
 
@@ -335,7 +334,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/07/14/fasttext/">
+    <link itemprop="mainEntityOfPage" href="https://yanfyang.github.io/2019/06/24/EM/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Fein">
@@ -352,7 +351,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">文本分类之fastText
+          <h1 class="post-title" itemprop="name headline">EM算法都在算些什么（推导理解）
 
               
             
@@ -378,7 +377,7 @@
                 
               
 
-              <time title="创建时间：2019-07-14 22:05:13" itemprop="dateCreated datePublished" datetime="2019-07-14T22:05:13+08:00">2019-07-14</time>
+              <time title="创建时间：2019-06-24 21:48:13" itemprop="dateCreated datePublished" datetime="2019-06-24T21:48:13+08:00">2019-06-24</time>
             
 
             
@@ -396,7 +395,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/读paper/" itemprop="url" rel="index"><span itemprop="name">读paper</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
 
                 
                 
@@ -415,8 +414,8 @@
                 </span>
             
                 <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/07/14/fasttext/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/14/fasttext/" itemprop="commentCount"></span>
+                <a href="/2019/06/24/EM/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/24/EM/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -424,7 +423,7 @@
 
           
           
-            <span id="/2019/07/14/fasttext/" class="leancloud_visitors" data-flag-title="文本分类之fastText">
+            <span id="/2019/06/24/EM/" class="leancloud_visitors" data-flag-title="EM算法都在算些什么（推导理解）">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -455,12 +454,9 @@
       
 
       
-        <h2 id="paper"><a href="#paper" class="headerlink" title="paper"></a>paper</h2><p>Word2Vec出现以后，深度学习在自然语言处理任务上的研究和发展再次火热起来。但是深度学习有个很大的障碍，就是参数多，计算量大，对GPU资源的依赖比较大，一般CPU大概率是跑不动深层神经网络模型的。不仅如此，即使使用了GPU，训练和测试的时间也很长，这对于一些基础的NLP任务(比如文本分类、情感分析这些简单的分类模型)来说，就有些不尽人意了。<br>fastText针对文本分类的任务提出了更快速更简单的模型，能够在保证准确度的基础上，速度有成千倍的提升！比如论文中的对比试验，之前采用别的模型需要近1h的训练，使用fastText只用1s就搞定。十亿单词的文本，仅仅使用标准的多核CPU，10分钟就可以训练完成。<br>论文传送：<br><a href="https://arxiv.org/pdf/1607.01759.pdf" target="_blank" rel="noopener">Bag of Tricks for Efficient Text Classification | cs.CL 2016</a><br><a href="https://arxiv.org/pdf/1607.04606.pdf" target="_blank" rel="noopener">Enriching Word Vectors with Subword Information | cs.CL 2017</a></p>
-<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>fastText的结构非常简单，对于分类模型它简化了中间层的处理，直接使用特征词的均值向量来做为句子的表达，然后经过softmax来得到输出的各label概率。也正是这样，大大简化了计算量，使得模型能够快速训练完成。模型架构如下图：<br><img src="/images/201907/fasttext.jpg" alt="fastText架构图"><br>图中的x是已经经过预处理的n-gram的词特征，对于N个样本来说，损失函数可表示为各类别负对数损失的和，其中，A为词嵌入矩阵，B为文本向量维度到输出维度的参数矩阵。</p>
-<script type="math/tex; mode=display">
-L = -\frac{1}{N} \sum_{n=1}^{N} y_{n} \log \left(f\left(B A x_{n}\right)\right)</script><h2 id="问题和优化"><a href="#问题和优化" class="headerlink" title="问题和优化"></a>问题和优化</h2><h3 id="层次softmax"><a href="#层次softmax" class="headerlink" title="层次softmax"></a>层次softmax</h3><p>同Word2Vec一样，文本表达经过softmax之后也面临着类别维度巨大的问题，正常的线性计算复杂度也需要O(kh),k为类别数量，h为文本向量维度。在词嵌入方法中提出了两种优化方法，层次softmax和负采样，论文用了层次softmax的方法。<br>作者提出用这种方法可以方便地计算概率值比较小的结点来进行剪枝，同时由于结点上的概率总是父结点比子结点要大，如果要求label最相似的结点，也可以根据最大堆快速得出。</p>
-<h3 id="n-gram-特征提取"><a href="#n-gram-特征提取" class="headerlink" title="n-gram 特征提取"></a>n-gram 特征提取</h3><p>根据模型架构，如果直接将词嵌入向量求均值，然后softmax计算输出概率也是可行的，但是这种unigram的方法相当于词袋模型，并没有考虑到语序的影响。<br>为了提取文本的语序信息，论文提出添加文本的n-gram特征进行优化。<br>如下图显示，在话题预测的任务中，添加n-gram特征以后的模型效果会大大提升。<br><img src="/images/201907/fasttextngram.jpg" alt="n-gram实验效果"></p>
-<h3 id="未登陆词的识别"><a href="#未登陆词的识别" class="headerlink" title="未登陆词的识别"></a>未登陆词的识别</h3><p>通常不论训练集的语料有多大，在实际应用的过程中，总会遇到一些稀少的未登录词。这些词有时会统一处理成UNK来同等对待，但是总归还是丧失了未登陆词的语义。<br>fastText的优化基于n-gram提出了解决未登陆词的新思路。它会在训练的过程中同时训练子词。<br>举个例子，单词 subject 一般训练的时候会把它作为整体的词来进行训练。但是基于2-gram的子词来分，就可以拆分为 su ub bj je ec ct 这样一系列的词，在训练过程中同时得到子词的向量表示。<br>如果遇到了新词就可以将共同的子词表示组合起来形成更好的新词表达。</p>
+        <h2 id="EM算法简述"><a href="#EM算法简述" class="headerlink" title="EM算法简述"></a>EM算法简述</h2><p>EM算法是对含有隐状态的参数估计问题的解法，目标是极大化可观测数据的对数似然概率。<br>比如，HMM的模型参数学习问题，如果只给了观测序列，而隐状态也未知的情况下，想要构建模型就需要EM算法。<br>事实上，EM算法分为两步，<br>一个是E步，即Expectatiion，求隐状态的期望；<br>一个是M步，即maximization，在隐状态期望已知的情况下再对极大似然函数求解，得到参数θ。<br>然后继续迭代，一步步得到更大似然概率的θ。</p>
+<h2 id="EM算法推导"><a href="#EM算法推导" class="headerlink" title="EM算法推导"></a>EM算法推导</h2><p>之前看了不少推导，总是迷迷糊糊，即便记住推导过程，感觉就是这么回事，但是还是不懂为什么要这样来写。最近在B站看到了贪心的视频，思路非常清晰，自己又推导了下，理解起来容易多了。<br>公式太多，不用LaTeX手打了。整个推导过程如下：<br><img src="/images/201906/EM.jpg" alt="EM推导"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>经过如上推导，可以看到分为的两步，<br>E步是在上一轮得到的θ和观测变量已知情况下，隐变量z的期望；<br>M步则是在Z期望已知的情况下求最大似然，得到更好的参数θ。<br>这样，Z和θ轮流更新，一步步逼近更好的参数分布。</p>
 
       
     </div>
@@ -487,9 +483,11 @@ L = -\frac{1}{N} \sum_{n=1}^{N} y_{n} \log \left(f\left(B A x_{n}\right)\right)<
         
         <div class="post-tags">
           
-            <a href="/tags/文本分类/" rel="tag"><i class="fa fa-tag"></i> 文本分类</a>
+            <a href="/tags/HMM/" rel="tag"><i class="fa fa-tag"></i> HMM</a>
           
-            <a href="/tags/fastText/" rel="tag"><i class="fa fa-tag"></i> fastText</a>
+            <a href="/tags/EM/" rel="tag"><i class="fa fa-tag"></i> EM</a>
+          
+            <a href="/tags/序列模型/" rel="tag"><i class="fa fa-tag"></i> 序列模型</a>
           
         </div>
       
@@ -502,8 +500,8 @@ L = -\frac{1}{N} \sum_{n=1}^{N} y_{n} \log \left(f\left(B A x_{n}\right)\right)<
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/10/transformer/" rel="next" title="Transformer">
-                <i class="fa fa-chevron-left"></i> Transformer
+              <a href="/2019/06/22/clustering/" rel="next" title="k-means聚类">
+                <i class="fa fa-chevron-left"></i> k-means聚类
               </a>
             
           </div>
@@ -511,6 +509,10 @@ L = -\frac{1}{N} \sum_{n=1}^{N} y_{n} \log \left(f\left(B A x_{n}\right)\right)<
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/25/lda/" rel="prev" title="直观理解话题模型及应用">
+                直观理解话题模型及应用 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -585,7 +587,7 @@ L = -\frac{1}{N} \sum_{n=1}^{N} y_{n} \log \left(f\left(B A x_{n}\right)\right)<
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-count">12</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -675,7 +677,9 @@ L = -\frac{1}{N} \sum_{n=1}^{N} y_{n} \log \left(f\left(B A x_{n}\right)\right)<
                     
                       
                     
-                    <span class="site-state-item-count">22</span>
+                      
+                    
+                    <span class="site-state-item-count">23</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -728,7 +732,7 @@ L = -\frac{1}{N} \sum_{n=1}^{N} y_{n} \log \left(f\left(B A x_{n}\right)\right)<
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#paper"><span class="nav-number">1.</span> <span class="nav-text">paper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型"><span class="nav-number">2.</span> <span class="nav-text">模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题和优化"><span class="nav-number">3.</span> <span class="nav-text">问题和优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#层次softmax"><span class="nav-number">3.1.</span> <span class="nav-text">层次softmax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#n-gram-特征提取"><span class="nav-number">3.2.</span> <span class="nav-text">n-gram 特征提取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#未登陆词的识别"><span class="nav-number">3.3.</span> <span class="nav-text">未登陆词的识别</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#EM算法简述"><span class="nav-number">1.</span> <span class="nav-text">EM算法简述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EM算法推导"><span class="nav-number">2.</span> <span class="nav-text">EM算法推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>
